@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tredy - Next-Gen AI Conversation Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
+        
+        * { 
+            font-family: 'Inter', sans-serif; 
+        }
+        
+        body { 
+            background: #000;
+            color: #fff;
+            overflow-x: hidden;
+        }
+        
+        .x-ai-gradient {
+            background: linear-gradient(135deg, #000000 0%, #0a0a0a 50%, #000000 100%);
+        }
+        
+        .x-ai-text {
+            font-weight: 900;
+            letter-spacing: -0.04em;
+            line-height: 0.9;
+        }
+        
+        .x-ai-subtitle {
+            font-weight: 300;
+            letter-spacing: -0.02em;
+        }
+        
+        .x-ai-button {
+            background: #fff;
+            color: #000;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            border: none;
+            outline: none;
+        }
+        
+        .x-ai-button:hover {
+            background: #f5f5f5;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255,255,255,0.1);
+        }
+        
+        .x-ai-secondary {
+            background: transparent;
+            color: #fff;
+            border: 1px solid rgba(255,255,255,0.2);
+            font-weight: 500;
+        }
+        
+        .x-ai-secondary:hover {
+            border-color: rgba(255,255,255,0.4);
+            background: rgba(255,255,255,0.05);
+        }
+        
+        .glass-nav {
+            backdrop-filter: blur(20px);
+            background: rgba(0,0,0,0.8);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .hero-gradient {
+            background: radial-gradient(ellipse at center, rgba(255,255,255,0.03) 0%, transparent 70%);
+        }
+        
+        .floating-element {
+            animation: float 8s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(1deg); }
+        }
+        
+        .pulse-glow {
+            animation: pulse-glow 3s ease-in-out infinite alternate;
+        }
+        
+        @keyframes pulse-glow {
+            from { box-shadow: 0 0 30px rgba(255,255,255,0.1); }
+            to { box-shadow: 0 0 50px rgba(255,255,255,0.2); }
+        }
+        
+        .slide-in {
+            animation: slideIn 0.8s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .feature-card {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.08);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            background: rgba(255,255,255,0.05);
+            border-color: rgba(255,255,255,0.15);
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+        
+        .scenario-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.1);
+            backdrop-filter: blur(15px);
+        }
+        
+        .chat-interface {
+            background: rgba(0,0,0,0.6);
+            border: 1px solid rgba(255,255,255,0.1);
+            backdrop-filter: blur(20px);
+        }
+        
+        .message-bubble {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        .ai-message {
+            background: rgba(255,255,255,0.08);
+            border-left: 3px solid #3b82f6;
+        }
+        
+        .user-message {
+            background: rgba(255,255,255,0.05);
+            border-left: 3px solid #10b981;
+        }
+        
+        .important-note {
+            background: rgba(255,255,255,0.08);
+            border-left: 3px solid #f59e0b;
+        }
+        
+        .memory-panel {
+            background: rgba(0,0,0,0.8);
+            border: 1px solid rgba(255,255,255,0.1);
+            backdrop-filter: blur(20px);
+        }
+        
+        .progress-ring {
+            stroke-dasharray: 283;
+            stroke-dashoffset: 283;
+            animation: progress 2s ease-in-out forwards;
+        }
+        
+        @keyframes progress {
+            to { stroke-dashoffset: 70; }
+        }
+        
+        .neon-glow {
+            text-shadow: 0 0 20px rgba(255,255,255,0.5);
+        }
+        
+        .gradient-border {
+            background: linear-gradient(45deg, #3b82f6, #8b5cf6, #06b6d4);
+            padding: 1px;
+            border-radius: 12px;
+        }
+        
+        .gradient-border > div {
+            background: #000;
+            border-radius: 11px;
+        }
+        
+        .typing-indicator {
+            display: inline-block;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: #3b82f6;
+            animation: typing 1.4s infinite ease-in-out;
+        }
+        
+        .typing-indicator:nth-child(2) { animation-delay: 0.2s; }
+        .typing-indicator:nth-child(3) { animation-delay: 0.4s; }
+        
+        @keyframes typing {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-10px); }
+        }
+        
+        .scroll-indicator {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
+            40% { transform: translateX(-50%) translateY(-10px); }
+            60% { transform: translateX(-50%) translateY(-5px); }
+        }
+        
+        /* Special T Logo Styles */
+        .tredy-logo {
+            position: relative;
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #667eea 100%);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            font-size: 28px;
+            color: white;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.4);
+            box-shadow: 
+                0 8px 32px rgba(102, 126, 234, 0.4),
+                inset 0 1px 0 rgba(255,255,255,0.2);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(255,255,255,0.1);
+            overflow: hidden;
+        }
+        
+        .tredy-logo::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, 
+                rgba(255,255,255,0.1) 0%, 
+                rgba(255,255,255,0.05) 50%, 
+                rgba(255,255,255,0.1) 100%);
+            border-radius: 16px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .tredy-logo::after {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #667eea, #764ba2, #667eea, #764ba2);
+            border-radius: 18px;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            background-size: 200% 200%;
+            animation: gradient-shift 3s ease infinite;
+        }
+        
+        @keyframes gradient-shift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        .tredy-logo:hover {
+            transform: scale(1.08) rotate(1deg);
+            box-shadow: 
+                0 12px 40px rgba(102, 126, 234, 0.6),
+                inset 0 1px 0 rgba(255,255,255,0.3);
+            border-color: rgba(255,255,255,0.2);
+        }
+        
+        .tredy-logo:hover::before {
+            opacity: 1;
+        }
+        
+        .tredy-logo:hover::after {
+            opacity: 1;
+        }
+        
+        .tredy-logo-large {
+            width: 72px;
+            height: 72px;
+            font-size: 42px;
+            border-radius: 20px;
+        }
+        
+        .tredy-logo-large::before {
+            border-radius: 20px;
+        }
+        
+        .tredy-logo-large::after {
+            border-radius: 22px;
+        }
+        
+        .logo-glow {
+            animation: logo-glow 3s ease-in-out infinite alternate;
+        }
+        
+        @keyframes logo-glow {
+            from { 
+                box-shadow: 
+                    0 8px 32px rgba(102, 126, 234, 0.4),
+                    inset 0 1px 0 rgba(255,255,255,0.2);
+                text-shadow: 0 2px 8px rgba(0,0,0,0.4);
+            }
+            to { 
+                box-shadow: 
+                    0 16px 48px rgba(102, 126, 234, 0.7),
+                    inset 0 1px 0 rgba(255,255,255,0.3);
+                text-shadow: 0 4px 12px rgba(0,0,0,0.6);
+            }
+        }
+        
+        .logo-pulse {
+            animation: logo-pulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes logo-pulse {
+            0%, 100% { 
+                transform: scale(1);
+                filter: brightness(1);
+            }
+            50% { 
+                transform: scale(1.02);
+                filter: brightness(1.1);
+            }
+        }
+        
+        .logo-3d {
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+        
+        .logo-3d:hover {
+            transform: scale(1.08) rotateY(5deg) rotateX(2deg);
+        }
+    </style>
+</head>
+<body class="bg-black text-white">
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 glass-nav">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex justify-between items-center h-20">
+                <div class="flex items-center space-x-4">
+                    <div class="tredy-logo logo-glow logo-3d">
+                        T
+                    </div>
+                    <span class="text-2xl font-black x-ai-text">Tredy</span>
+                </div>
+                <div class="flex items-center space-x-8">
+                    <a href="#scenarios" class="text-gray-300 hover:text-white transition-colors font-medium">Scenarios</a>
+                    <a href="#features" class="text-gray-300 hover:text-white transition-colors font-medium">Features</a>
+                    <a href="src/FlowChat.jsx" class="x-ai-button px-8 py-3 rounded-xl font-semibold">
+                        Try Tredy
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="min-h-screen flex items-center justify-center relative x-ai-gradient hero-gradient">
+        <div class="max-w-7xl mx-auto px-6 text-center relative z-10">
+            <div class="slide-in">
+                <h1 class="text-7xl md:text-9xl x-ai-text mb-8 leading-none">
+                    The Future of
+                    <span class="block neon-glow">
+                        AI Conversations
+                    </span>
+                </h1>
+                <p class="text-2xl md:text-3xl x-ai-subtitle text-gray-300 mb-12 max-w-5xl mx-auto leading-relaxed">
+                    Experience next-generation AI chat with advanced threading, dynamic memory, and intelligent collaboration. 
+                    Where conversations evolve into meaningful knowledge.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-8 justify-center items-center mb-16">
+                    <a href="src/FlowChat.jsx" class="x-ai-button px-12 py-5 rounded-2xl text-xl font-semibold">
+                        Try Tredy
+                    </a>
+                    <a href="#scenarios" class="x-ai-secondary px-12 py-5 rounded-2xl text-xl font-medium">
+                        Watch Demo
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Floating Elements -->
+            <div class="absolute top-20 left-10 w-32 h-32 bg-blue-500/10 rounded-full floating-element"></div>
+            <div class="absolute top-40 right-20 w-24 h-24 bg-purple-500/10 rounded-full floating-element" style="animation-delay: 1s;"></div>
+            <div class="absolute bottom-40 left-20 w-40 h-40 bg-green-500/10 rounded-full floating-element" style="animation-delay: 2s;"></div>
+            
+            <!-- Scroll Indicator -->
+            <div class="scroll-indicator">
+                <i data-lucide="chevron-down" class="w-6 h-6 text-gray-400"></i>
+            </div>
+        </div>
+    </section>
+
+    <!-- Real Scenarios Section -->
+    <section id="scenarios" class="py-32">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-24">
+                <h2 class="text-6xl md:text-7xl x-ai-text text-white mb-8">
+                    Real Scenarios
+                </h2>
+                <p class="text-2xl x-ai-subtitle text-gray-400 max-w-5xl mx-auto">
+                    See how Tredy transforms complex conversations into structured knowledge with next-gen AI capabilities.
+                </p>
+            </div>
+
+            <!-- Scenario 1: Research & Learning -->
+            <div class="mb-32">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                    <div class="slide-in">
+                        <h3 class="text-4xl x-ai-text text-white mb-8">Research & Learning</h3>
+                        <p class="text-xl text-gray-400 mb-10 leading-relaxed">
+                            Complex topics become manageable through intelligent threading. Each concept gets its own focused space while maintaining connections to related ideas.
+                        </p>
+                        <div class="space-y-6">
+                            <div class="flex items-center space-x-4">
+                                <div class="w-3 h-3 bg-blue-500 rounded-full"></div>
+                                <span class="text-lg text-gray-300">Automatic concept extraction</span>
+                            </div>
+                            <div class="flex items-center space-x-4">
+                                <div class="w-3 h-3 bg-purple-500 rounded-full"></div>
+                                <span class="text-lg text-gray-300">Hierarchical thread organization</span>
+                            </div>
+                            <div class="flex items-center space-x-4">
+                                <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+                                <span class="text-lg text-gray-300">Cross-referenced insights</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="scenario-card rounded-3xl p-8">
+                        <!-- Chat Interface -->
+                        <div class="space-y-6">
+                            <div class="flex justify-end">
+                                <div class="message-bubble user-message max-w-md px-6 py-4 rounded-2xl">
+                                    <p class="text-white text-lg">Explain quantum computing and its applications</p>
+                                </div>
+                            </div>
+                            <div class="flex justify-start">
+                                <div class="message-bubble ai-message max-w-lg px-6 py-4 rounded-2xl">
+                                    <p class="text-white text-lg mb-4">I'll break this down into focused threads...</p>
+                                    <div class="space-y-3">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-3 h-3 bg-blue-500 rounded-full"></div>
+                                            <span class="text-gray-300">Quantum Mechanics Basics</span>
+                                        </div>
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-3 h-3 bg-purple-500 rounded-full"></div>
+                                            <span class="text-gray-300">Quantum Algorithms</span>
+                                        </div>
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+                                            <span class="text-gray-300">Real-world Applications</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scenario 2: Project Planning -->
+            <div class="mb-32">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                    <div class="order-2 lg:order-1">
+                        <div class="memory-panel rounded-3xl p-8">
+                            <!-- Memory Analysis -->
+                            <div class="space-y-6">
+                                <div class="flex items-center justify-between">
+                                    <h4 class="text-xl font-bold text-white">Project Memory</h4>
+                                    <span class="px-4 py-2 bg-green-600 text-white rounded-full text-sm font-semibold">Active</span>
+                                </div>
+                                <div class="space-y-6">
+                                    <div class="bg-gray-800/50 p-6 rounded-2xl">
+                                        <div class="flex items-center justify-between mb-4">
+                                            <span class="text-gray-400">Understanding Level</span>
+                                            <span class="text-green-400 font-semibold">Expert</span>
+                                        </div>
+                                        <div class="relative">
+                                            <div class="w-full bg-gray-700 rounded-full h-3">
+                                                <div class="bg-gradient-to-r from-green-500 to-blue-500 h-3 rounded-full" style="width: 85%"></div>
+                                            </div>
+                                            <div class="absolute -top-8 right-0 text-sm text-gray-400">85%</div>
+                                        </div>
+                                    </div>
+                                    <div class="bg-gray-800/50 p-6 rounded-2xl">
+                                        <span class="text-gray-400 mb-4 block">Key Concepts</span>
+                                        <div class="flex flex-wrap gap-3">
+                                            <span class="px-4 py-2 bg-blue-600 text-white rounded-full text-sm">Architecture</span>
+                                            <span class="px-4 py-2 bg-purple-600 text-white rounded-full text-sm">Timeline</span>
+                                            <span class="px-4 py-2 bg-green-600 text-white rounded-full text-sm">Resources</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="order-1 lg:order-2 slide-in">
+                        <h3 class="text-4xl x-ai-text text-white mb-8">Project Planning</h3>
+                        <p class="text-xl text-gray-400 mb-10 leading-relaxed">
+                            Complex projects become manageable through intelligent organization. Each component gets its own thread while maintaining project-wide context.
+                        </p>
+                        <div class="space-y-6">
+                            <div class="flex items-center space-x-4">
+                                <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+                                <span class="text-lg text-gray-300">Component-based organization</span>
+                            </div>
+                            <div class="flex items-center space-x-4">
+                                <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+                                <span class="text-lg text-gray-300">Progress tracking</span>
+                            </div>
+                            <div class="flex items-center space-x-4">
+                                <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+                                <span class="text-lg text-gray-300">Resource allocation</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scenario 3: AI Collaboration -->
+            <div class="mb-32">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                    <div class="slide-in">
+                        <h3 class="text-4xl x-ai-text text-white mb-8">AI Collaboration</h3>
+                        <p class="text-xl text-gray-400 mb-10 leading-relaxed">
+                            Multiple AI models work together, each specializing in different aspects. Get comprehensive insights from diverse AI perspectives.
+                        </p>
+                        <div class="space-y-6">
+                            <div class="flex items-center space-x-4">
+                                <div class="w-3 h-3 bg-purple-500 rounded-full"></div>
+                                <span class="text-lg text-gray-300">Multi-model coordination</span>
+                            </div>
+                            <div class="flex items-center space-x-4">
+                                <div class="w-3 h-3 bg-purple-500 rounded-full"></div>
+                                <span class="text-lg text-gray-300">Specialized AI experts</span>
+                            </div>
+                            <div class="flex items-center space-x-4">
+                                <div class="w-3 h-3 bg-purple-500 rounded-full"></div>
+                                <span class="text-lg text-gray-300">Comprehensive insights</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="scenario-card rounded-3xl p-8">
+                        <!-- AI Group Manager -->
+                        <div class="space-y-6">
+                            <div class="flex items-center space-x-3 mb-6">
+                                <i data-lucide="users" class="w-6 h-6 text-purple-400"></i>
+                                <span class="text-xl font-bold text-white">AI Group Manager</span>
+                            </div>
+                            <div class="space-y-4">
+                                <div class="bg-gray-800/50 p-4 rounded-2xl border-l-4 border-blue-500">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="text-blue-400 font-semibold">GPT-4</span>
+                                        <span class="text-gray-400 text-sm">Strategy</span>
+                                    </div>
+                                    <p class="text-gray-300">Analyzing project scope and requirements...</p>
+                                    <div class="flex space-x-1 mt-2">
+                                        <div class="typing-indicator"></div>
+                                        <div class="typing-indicator"></div>
+                                        <div class="typing-indicator"></div>
+                                    </div>
+                                </div>
+                                <div class="bg-gray-800/50 p-4 rounded-2xl border-l-4 border-green-500">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="text-green-400 font-semibold">Claude-3.5</span>
+                                        <span class="text-gray-400 text-sm">Technical</span>
+                                    </div>
+                                    <p class="text-gray-300">Evaluating technical feasibility...</p>
+                                </div>
+                                <div class="bg-gray-800/50 p-4 rounded-2xl border-l-4 border-purple-500">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="text-purple-400 font-semibold">Gemini-Pro</span>
+                                        <span class="text-gray-400 text-sm">Implementation</span>
+                                    </div>
+                                    <p class="text-gray-300">Creating implementation roadmap...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scenario 4: Important Notes -->
+            <div class="mb-32">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                    <div class="order-2 lg:order-1">
+                        <div class="scenario-card rounded-3xl p-8">
+                            <!-- Important Notes Interface -->
+                            <div class="space-y-6">
+                                <div class="flex items-center space-x-3 mb-6">
+                                    <i data-lucide="bookmark" class="w-6 h-6 text-yellow-400"></i>
+                                    <span class="text-xl font-bold text-white">Important Notes</span>
+                                </div>
+                                <div class="space-y-4">
+                                    <div class="bg-gray-800/50 p-4 rounded-2xl border-l-4 border-yellow-500">
+                                        <div class="flex items-center justify-between mb-2">
+                                            <span class="text-yellow-400 font-semibold">Critical Decision</span>
+                                            <span class="text-gray-400 text-sm">2 min ago</span>
+                                        </div>
+                                        <p class="text-gray-300">"Use microservices architecture for scalability"</p>
+                                    </div>
+                                    <div class="bg-gray-800/50 p-4 rounded-2xl border-l-4 border-yellow-500">
+                                        <div class="flex items-center justify-between mb-2">
+                                            <span class="text-yellow-400 font-semibold">Key Insight</span>
+                                            <span class="text-gray-400 text-sm">5 min ago</span>
+                                        </div>
+                                        <p class="text-gray-300">"Database optimization is critical for performance"</p>
+                                    </div>
+                                    <div class="bg-gray-800/50 p-4 rounded-2xl border-l-4 border-yellow-500">
+                                        <div class="flex items-center justify-between mb-2">
+                                            <span class="text-yellow-400 font-semibold">Action Item</span>
+                                            <span class="text-gray-400 text-sm">8 min ago</span>
+                                        </div>
+                                        <p class="text-gray-300">"Schedule security review for next week"</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="order-1 lg:order-2 slide-in">
+                        <h3 class="text-4xl x-ai-text text-white mb-8">Important Notes</h3>
+                        <p class="text-xl text-gray-400 mb-10 leading-relaxed">
+                            Instantly save and highlight crucial information. Create special threads for important concepts that need focused attention and follow-up.
+                        </p>
+                        <div class="space-y-6">
+                            <div class="flex items-center space-x-4">
+                                <div class="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                                <span class="text-lg text-gray-300">One-click highlighting</span>
+                            </div>
+                            <div class="flex items-center space-x-4">
+                                <div class="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                                <span class="text-lg text-gray-300">Special thread creation</span>
+                            </div>
+                            <div class="flex items-center space-x-4">
+                                <div class="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                                <span class="text-lg text-gray-300">Priority organization</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-32">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-24">
+                <h2 class="text-6xl md:text-7xl x-ai-text text-white mb-8">
+                    Revolutionary Features
+                </h2>
+                <p class="text-2xl x-ai-subtitle text-gray-400 max-w-5xl mx-auto">
+                    Discover the power of advanced AI conversation with intelligent threading, dynamic memory, and collaborative learning.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Advanced Threading -->
+                <div class="feature-card p-8 rounded-3xl slide-in">
+                    <div class="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center mb-8">
+                        <i data-lucide="git-branch" class="w-8 h-8 text-white"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-6">Advanced Threading</h3>
+                    <p class="text-gray-400 mb-8 leading-relaxed text-lg">
+                        Create focused conversations with intelligent thread branching. Explore topics in depth while maintaining context across related discussions.
+                    </p>
+                    <div class="space-y-4">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-2 h-2 bg-blue-500 rounded-full"></div>
+                            <span class="text-gray-300">Hierarchical thread organization</span>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <div class="w-2 h-2 bg-blue-500 rounded-full"></div>
+                            <span class="text-gray-300">Context-aware suggestions</span>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <div class="w-2 h-2 bg-blue-500 rounded-full"></div>
+                            <span class="text-gray-300">Multi-level conversations</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dynamic Memory -->
+                <div class="feature-card p-8 rounded-3xl slide-in">
+                    <div class="w-16 h-16 bg-gradient-to-r from-green-500 to-teal-600 rounded-2xl flex items-center justify-center mb-8">
+                        <i data-lucide="brain" class="w-8 h-8 text-white"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-6">Dynamic Memory System</h3>
+                    <p class="text-gray-400 mb-8 leading-relaxed text-lg">
+                        AI that learns and adapts to your understanding level. Personalized insights and recommendations based on your learning journey.
+                    </p>
+                    <div class="space-y-4">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+                            <span class="text-gray-300">Understanding level analysis</span>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+                            <span class="text-gray-300">Knowledge gap identification</span>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+                            <span class="text-gray-300">Personalized recommendations</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI Collaboration -->
+                <div class="feature-card p-8 rounded-3xl slide-in">
+                    <div class="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-600 rounded-2xl flex items-center justify-center mb-8">
+                        <i data-lucide="users" class="w-8 h-8 text-white"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-6">AI Group Manager</h3>
+                    <p class="text-gray-400 mb-8 leading-relaxed text-lg">
+                        Coordinate multiple AI models in collaborative discussions. Get diverse perspectives and comprehensive insights from specialized AI experts.
+                    </p>
+                    <div class="space-y-4">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-2 h-2 bg-purple-500 rounded-full"></div>
+                            <span class="text-gray-300">Multi-model coordination</span>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <div class="w-2 h-2 bg-purple-500 rounded-full"></div>
+                            <span class="text-gray-300">Specialized AI experts</span>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <div class="w-2 h-2 bg-purple-500 rounded-full"></div>
+                            <span class="text-gray-300">Comprehensive insights</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Important Notes -->
+                <div class="feature-card p-8 rounded-3xl slide-in">
+                    <div class="w-16 h-16 bg-gradient-to-r from-yellow-500 to-orange-600 rounded-2xl flex items-center justify-center mb-8">
+                        <i data-lucide="bookmark" class="w-8 h-8 text-white"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-6">Important Notes</h3>
+                    <p class="text-gray-400 mb-8 leading-relaxed text-lg">
+                        Save and highlight crucial information instantly. Create special threads for important concepts that need focused attention.
+                    </p>
+                    <div class="space-y-4">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-2 h-2 bg-yellow-500 rounded-full"></div>
+                            <span class="text-gray-300">One-click highlighting</span>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <div class="w-2 h-2 bg-yellow-500 rounded-full"></div>
+                            <span class="text-gray-300">Special thread creation</span>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <div class="w-2 h-2 bg-yellow-500 rounded-full"></div>
+                            <span class="text-gray-300">Priority organization</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Learning Path -->
+                <div class="feature-card p-8 rounded-3xl slide-in">
+                    <div class="w-16 h-16 bg-gradient-to-r from-indigo-500 to-blue-600 rounded-2xl flex items-center justify-center mb-8">
+                        <i data-lucide="trending-up" class="w-8 h-8 text-white"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-6">Learning Path Analysis</h3>
+                    <p class="text-gray-400 mb-8 leading-relaxed text-lg">
+                        Track your learning journey with visual progress indicators and adaptive recommendations based on your understanding level.
+                    </p>
+                    <div class="space-y-4">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-2 h-2 bg-indigo-500 rounded-full"></div>
+                            <span class="text-gray-300">Visual progress tracking</span>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <div class="w-2 h-2 bg-indigo-500 rounded-full"></div>
+                            <span class="text-gray-300">Understanding level assessment</span>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <div class="w-2 h-2 bg-indigo-500 rounded-full"></div>
+                            <span class="text-gray-300">Adaptive recommendations</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Export & Share -->
+                <div class="feature-card p-8 rounded-3xl slide-in">
+                    <div class="w-16 h-16 bg-gradient-to-r from-red-500 to-pink-600 rounded-2xl flex items-center justify-center mb-8">
+                        <i data-lucide="share-2" class="w-8 h-8 text-white"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-6">Export & Collaboration</h3>
+                    <p class="text-gray-400 mb-8 leading-relaxed text-lg">
+                        Export conversations, share insights, and collaborate with others. Seamless integration with your workflow.
+                    </p>
+                    <div class="space-y-4">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-2 h-2 bg-red-500 rounded-full"></div>
+                            <span class="text-gray-300">Multiple export formats</span>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <div class="w-2 h-2 bg-red-500 rounded-full"></div>
+                            <span class="text-gray-300">Real-time collaboration</span>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <div class="w-2 h-2 bg-red-500 rounded-full"></div>
+                            <span class="text-gray-300">Session management</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-32">
+        <div class="max-w-5xl mx-auto text-center px-6">
+            <h2 class="text-6xl md:text-7xl x-ai-text text-white mb-8">
+                Ready to Transform Your AI Conversations?
+            </h2>
+            <p class="text-2xl x-ai-subtitle text-gray-400 mb-12 leading-relaxed">
+                Join the future of intelligent conversation. Experience advanced threading, dynamic memory, and personalized AI collaboration.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-8 justify-center items-center">
+                <a href="src/FlowChat.jsx" class="x-ai-button px-12 py-5 rounded-2xl text-xl font-semibold">
+                    Try Tredy
+                </a>
+                <a href="#features" class="x-ai-secondary px-12 py-5 rounded-2xl text-xl font-medium">
+                    Learn More
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-16 border-t border-gray-800">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center space-x-4 mb-6">
+                        <div class="tredy-logo tredy-logo-large logo-glow logo-3d">
+                            T
+                        </div>
+                        <span class="text-2xl font-black x-ai-text">Tredy</span>
+                    </div>
+                    <p class="text-gray-400 text-lg">
+                        Next-generation AI conversation platform with advanced threading and dynamic memory.
+                    </p>
+                </div>
+                <div>
+                    <h3 class="font-bold text-white text-lg mb-6">Features</h3>
+                    <ul class="space-y-3 text-gray-400">
+                        <li><a href="#features" class="hover:text-white transition-colors">Advanced Threading</a></li>
+                        <li><a href="#features" class="hover:text-white transition-colors">Dynamic Memory</a></li>
+                        <li><a href="#features" class="hover:text-white transition-colors">AI Collaboration</a></li>
+                        <li><a href="#features" class="hover:text-white transition-colors">Important Notes</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-bold text-white text-lg mb-6">Resources</h3>
+                    <ul class="space-y-3 text-gray-400">
+                        <li><a href="src/FlowChat.jsx" class="hover:text-white transition-colors">Try Tredy</a></li>
+                        <li><a href="#scenarios" class="hover:text-white transition-colors">Demo</a></li>
+                        <li><a href="#features" class="hover:text-white transition-colors">Features</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Documentation</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-bold text-white text-lg mb-6">Connect</h3>
+                    <ul class="space-y-3 text-gray-400">
+                        <li><a href="#" class="hover:text-white transition-colors">GitHub</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Twitter</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Discord</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Contact</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 mt-12 pt-8 text-center text-gray-400">
+                <p class="text-lg">&copy; 2024 Tredy. All rights reserved. Built with ❤️ for the future of AI conversations.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Intersection Observer for animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe all slide-in elements
+        document.querySelectorAll('.slide-in').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(30px)';
+            el.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+            observer.observe(el);
+        });
+
+        // Parallax effect for floating elements
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const parallax = document.querySelectorAll('.floating-element');
+            parallax.forEach(element => {
+                const speed = 0.5;
+                element.style.transform = `translateY(${scrolled * speed}px)`;
+            });
+        });
+    </script>
+</body>
+</html> 
