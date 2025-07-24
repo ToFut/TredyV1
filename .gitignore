@@ -15,6 +15,10 @@ dist/
 .env.test.local
 .env.production.local
 
+# Files with API keys and secrets
+backend/env.example
+docker-compose.yml
+
 # IDE and editor files
 .vscode/
 .idea/
