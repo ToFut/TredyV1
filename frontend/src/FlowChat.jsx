@@ -34,6 +34,8 @@ import {
   Bookmark,
   Brain
 } from 'lucide-react';
+import { chatAPI } from './services/api';
+import { isAPIConfigured } from './config/api';
 
 // --- FULL FlowChat COMPONENT IMPLEMENTATION ---
 
@@ -138,7 +140,7 @@ const FlowChat = () => {
   
     // Initialize with enhanced sample data
     useEffect(() => {
-      const sessionId = 'session-1';
+      const sessionId = '22222222-2222-2222-2222-222222222222'; // Use proper UUID format
       setCurrentSessionId(sessionId);
       setSessions([{ id: sessionId, name: 'New Conversation', createdAt: new Date() }]);
       
@@ -187,36 +189,98 @@ const FlowChat = () => {
         ));
       }
   
-      // Simulate AI response with threading context
-      setTimeout(() => {
+            try {
+        // Check if API is configured - temporarily bypass for debugging
+        console.log('🔍 isAPIConfigured() result:', isAPIConfigured());
+        if (!isAPIConfigured()) {
+          console.log('⚠️ API not configured, but continuing anyway for testing');
+          // throw new Error('OpenAI API key not configured');
+        }
+
+        // Map display names to actual model IDs for the backend
+        const modelMapping = {
+          'GPT-4': 'gpt-4o',
+          'GPT-3.5': 'gpt-3.5-turbo',
+          'Claude-3.5': 'claude-3.5-sonnet',
+          'Gemini-Pro': 'gemini-pro',
+          'Base-44-API': 'gpt-4o',
+          'Claude-Code': 'claude-3.5-sonnet',
+          'Gemini-Code': 'gemini-pro',
+          'Sora': 'gpt-4o',
+          'Veo': 'gemini-pro',
+          'Mistral': 'gpt-4o',
+          'LangChain': 'gpt-4o',
+          'AI-Group-Manager': 'gpt-4o'
+        };
+        
+        const actualModelId = modelMapping[model] || 'gpt-4o';
+        
+        console.log('🔍 Attempting API call with:', {
+          content: text,
+          conversationId: currentSessionId || '22222222-2222-2222-2222-222222222222',
+          threadId: threadId,
+          model: model,
+          actualModelId: actualModelId
+        });
+
+        console.log('🔍 API Base URL:', process.env.REACT_APP_API_URL || 'http://localhost:5001/api');
+        console.log('🔍 Full URL being called:', `${process.env.REACT_APP_API_URL || 'http://localhost:5001/api'}/chat/send`);
+        console.log('🔍 Environment variable REACT_APP_API_URL:', process.env.REACT_APP_API_URL);
+        console.log('🔍 Fallback URL:', 'http://localhost:5001/api');
+
+        // Generate real ChatGPT response using backend API
+        const requestData = {
+          content: text,
+          conversationId: currentSessionId || '22222222-2222-2222-2222-222222222222',
+          model: actualModelId
+        };
+        
+        // Only include threadId if it's a valid UUID
+        if (threadId && threadId.match(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i)) {
+          requestData.threadId = threadId;
+        }
+        
+        const response = await chatAPI.sendMessage(requestData);
+
+        console.log('✅ API Response received:', response);
+        
         const aiMsg = {
           id: generateId(),
           sessionId: currentSessionId,
-          content: generateAIResponse(text, model, threadId),
+          content: response.aiMessage.content,
           sender: 'AI',
-          model,
+          model: response.usage.model,
           timestamp: new Date(),
-          threadId
+          threadId,
+          contextUsed: response.contextUsed || null
         };
-        
+
         setMessages(prev => [...prev, aiMsg]);
         setIsTyping(false);
+
+        // Generate thread suggestions
+        if (response.suggestions && response.suggestions.length > 0) {
+          setSuggestedThreads(prev => ({
+            ...prev,
+            [aiMsg.id]: response.suggestions
+          }));
+        }
   
         // Generate suggested threads for AI responses
         if (!threadId) {
           generateSuggestedThreadsForMessage(aiMsg.id, text, aiMsg.content);
         }
         
-              // Update memory after AI response
-      if (threadId && threadMemories[threadId]) {
-        setTimeout(() => {
-          generateThreadMemory(threadId);
-          // Trigger additional analyses
-          analyzeLearningPath();
-          identifyKnowledgeGaps();
-          generatePersonalizedRecommendations();
-        }, 500);
-      }
+        // Update memory after AI response
+        if (threadId && threadMemories[threadId]) {
+          setTimeout(() => {
+            generateThreadMemory(threadId);
+            // Trigger additional analyses
+            analyzeLearningPath();
+            identifyKnowledgeGaps();
+            generatePersonalizedRecommendations();
+          }, 500);
+        }
         
         // Auto-scroll
         setTimeout(() => {
@@ -224,7 +288,38 @@ const FlowChat = () => {
             chatRef.current.scrollTop = chatRef.current.scrollHeight;
           }
         }, 100);
-      }, 800 + Math.random() * 1500);
+  
+      } catch (error) {
+        console.error('❌ ChatGPT API Error:', error);
+        console.error('❌ Error details:', {
+          message: error.message,
+          response: error.response?.data,
+          status: error.response?.status,
+          url: error.config?.url
+        });
+        
+        // Fallback to mock response
+        const fallbackResponse = generateAIResponse(text, model, threadId);
+        const aiMsg = {
+          id: generateId(),
+          sessionId: currentSessionId,
+          content: fallbackResponse,
+          sender: 'AI',
+          model,
+          timestamp: new Date(),
+          threadId
+        };
+  
+        setMessages(prev => [...prev, aiMsg]);
+        setIsTyping(false);
+        
+        // Auto-scroll for fallback
+        setTimeout(() => {
+          if (chatRef.current) {
+            chatRef.current.scrollTop = chatRef.current.scrollHeight;
+          }
+        }, 100);
+      }
     };
   
     const generateAIResponse = (userText, model, threadId) => {
@@ -2535,6 +2630,12 @@ const FlowChat = () => {
                     {message.sender === 'AI' && message.model && (
                       <span className={`px-2 py-1 rounded text-xs font-medium ${availableModels.find(m => m.id === message.model)?.color || 'bg-gray-100 text-gray-700'}`}>
                         {availableModels.find(m => m.id === message.model)?.name || message.model}
+                      </span>
+                    )}
+                    {message.sender === 'AI' && message.contextUsed && (
+                      <span className="flex items-center space-x-1 px-2 py-1 bg-green-100 text-green-700 rounded text-xs font-medium">
+                        <Brain className="w-3 h-3" />
+                        <span>Context: {message.contextUsed.messagesCount}msgs</span>
                       </span>
                     )}
                     <span>{message.timestamp.toLocaleTimeString()}</span>
