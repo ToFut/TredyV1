@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thread Debug Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .thread-card {
+            background: linear-gradient(to right, #eff6ff, #dbeafe);
+            border: 1px solid #3b82f6;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+        }
+        .thread-card:hover {
+            transform: scale(1.02);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+        }
+        .thread-card:active {
+            transform: scale(0.98);
+        }
+        .button {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            margin: 0.5rem;
+        }
+        .button:hover {
+            background: #2563eb;
+        }
+        .status {
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0.5rem;
+            font-weight: bold;
+        }
+        .success { background: #d1fae5; color: #065f46; }
+        .error { background: #fee2e2; color: #991b1b; }
+        .info { background: #dbeafe; color: #1e40af; }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>Thread Click Debug Test</h1>
+        <p>This test helps isolate the thread clicking issue.</p>
+        
+        <div id="status" class="status info">Ready to test...</div>
+        
+        <h2>Test 1: Basic Thread Card Click</h2>
+        <div class="thread-card" onclick="testBasicClick()">
+            <h3>Test Thread #1234</h3>
+            <p>Click anywhere on this card to test basic navigation.</p>
+            <div>
+                <span style="background: #dbeafe; color: #1e40af; padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-size: 0.75rem;">Open</span>
+                <span style="background: #f3f4f6; color: #374151; padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-size: 0.75rem; margin-left: 0.5rem;">3 msg</span>
+            </div>
+        </div>
+        
+        <h2>Test 2: Thread Card with Buttons</h2>
+        <div class="thread-card" onclick="testCardWithButtons(event)">
+            <h3>Test Thread #5678</h3>
+            <p>Click on the card (not buttons) to test navigation.</p>
+            <div>
+                <button class="button" onclick="testButtonClick(event)">Open Button</button>
+                <button class="button" onclick="testButtonClick(event)">Details</button>
+            </div>
+        </div>
+        
+        <h2>Test 3: Event Propagation Test</h2>
+        <div class="thread-card" onclick="testEventPropagation(event)">
+            <h3>Test Thread #9999</h3>
+            <p>This tests event propagation and target detection.</p>
+            <div>
+                <span>Click anywhere to see event details</span>
+            </div>
+        </div>
+        
+        <h2>Console Output</h2>
+        <div id="console-output" style="background: #1f2937; color: #f9fafb; padding: 1rem; border-radius: 0.5rem; font-family: monospace; font-size: 0.875rem; max-height: 300px; overflow-y: auto;">
+            <div>Console logs will appear here...</div>
+        </div>
+    </div>
+    
+    <script>
+        function log(message, type = 'info') {
+            const consoleOutput = document.getElementById('console-output');
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = document.createElement('div');
+            logEntry.innerHTML = `<span style="color: #6b7280;">[${timestamp}]</span> <span style="color: ${type === 'error' ? '#ef4444' : type === 'success' ? '#10b981' : '#3b82f6'};">${message}</span>`;
+            consoleOutput.appendChild(logEntry);
+            consoleOutput.scrollTop = consoleOutput.scrollHeight;
+            
+            // Also log to browser console
+            console.log(`[${timestamp}] ${message}`);
+        }
+        
+        function updateStatus(message, type = 'info') {
+            const status = document.getElementById('status');
+            status.textContent = message;
+            status.className = `status ${type}`;
+        }
+        
+        function testBasicClick() {
+            log('✅ Basic thread card clicked successfully!', 'success');
+            updateStatus('Basic click test passed!', 'success');
+        }
+        
+        function testCardWithButtons(event) {
+            // Check if click was on a button
+            if (event.target.closest('button')) {
+                log('🔘 Click was on a button - should NOT trigger navigation', 'info');
+                return;
+            }
+            
+            log('✅ Thread card clicked (not on button) - should navigate!', 'success');
+            updateStatus('Card click test passed!', 'success');
+        }
+        
+        function testButtonClick(event) {
+            event.stopPropagation();
+            log('🔘 Button clicked: ' + event.target.textContent, 'info');
+            updateStatus('Button click handled correctly!', 'info');
+        }
+        
+        function testEventPropagation(event) {
+            log('🔍 Event target: ' + event.target.tagName + ' - ' + event.target.textContent, 'info');
+            log('🔍 Event currentTarget: ' + event.currentTarget.tagName, 'info');
+            log('🔍 Click coordinates: ' + event.clientX + ', ' + event.clientY, 'info');
+            
+            if (event.target.closest('button')) {
+                log('🔘 Click was on or inside a button', 'info');
+            } else {
+                log('✅ Click was on the card area', 'success');
+            }
+            
+            updateStatus('Event propagation test completed!', 'info');
+        }
+        
+        // Initialize
+        log('🚀 Thread debug test initialized');
+        updateStatus('Ready to test thread clicking...', 'info');
+    </script>
+</body>
+</html> 

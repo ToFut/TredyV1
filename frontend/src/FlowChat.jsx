@@ -62,11 +62,13 @@ const FlowChat = () => {
     const [compactMode, setCompactMode] = useState(false);
     
     // Enhanced UX States
+    const [hoveredMessage, setHoveredMessage] = useState(null);
     const [showQuickActions, setShowQuickActions] = useState(false);
     const [modelDropdownOpen, setModelDropdownOpen] = useState(false);
     const [threadModelDropdownOpen, setThreadModelDropdownOpen] = useState(false);
     
     // Collaboration States
+    const [collaborators, setCollaborators] = useState([]);
     const [activeUsers, setActiveUsers] = useState([]);
     const [inviteModal, setInviteModal] = useState(false);
     const [currentInviteThread, setCurrentInviteThread] = useState(null);
@@ -596,25 +598,25 @@ const FlowChat = () => {
       console.log('🔍 Current threads count before:', threads.length);
       
       try {
-        const threadId = generateId();
+      const threadId = generateId();
         console.log('🔍 Generated thread ID:', threadId);
       
         // Create a simple thread without complex calculations
-        const newThread = {
-          id: threadId,
-          sessionId: currentSessionId,
-          parentMsgId,
-          parentThreadId,
-          selectedText,
+      const newThread = {
+        id: threadId,
+        sessionId: currentSessionId,
+        parentMsgId,
+        parentThreadId,
+        selectedText,
           model: preferredModel || currentModel,
-          status: 'active',
-          lastActiveAt: new Date(),
-          isExpanded: true,
-          showInline: true,
-          messages: [],
+        status: 'active',
+        lastActiveAt: new Date(),
+        isExpanded: true,
+        showInline: true,
+        messages: [],
           level: 1,
           siblingIndex: 0,
-          createdAt: new Date(),
+        createdAt: new Date(),
           highlight: true
         };
   
@@ -635,11 +637,11 @@ const FlowChat = () => {
         });
         
         // Navigate to the new thread immediately
-        setTimeout(() => {
+      setTimeout(() => {
           console.log('🔍 Navigating to new thread:', threadId);
           navigateToThread(threadId);
-        }, 100);
-        
+      }, 100);
+      
         console.log('✅ Thread creation completed successfully');
         
         // Show visual feedback
@@ -682,7 +684,7 @@ const FlowChat = () => {
   
     const createSuggestedThread = (parentMsgId, suggestion, parentThreadId = null, preferredModel = null) => {
       try {
-        const threadId = generateId();
+      const threadId = generateId();
       
       // Determine the model to use for this thread
       let threadModel = preferredModel || currentModel;
@@ -2758,8 +2760,6 @@ const FlowChat = () => {
                 : 'bg-white text-gray-900 border border-gray-200 shadow-md hover:shadow-lg transition-all duration-200 hover:scale-[1.01]'
             } relative group`}
             onMouseUp={() => onTextSelection(message.id, message.content)}
-            onMouseEnter={() => setHoveredMessage(message.id)}
-            onMouseLeave={() => setHoveredMessage(null)}
           >
             <div className="flex items-start justify-between">
               <div className="flex-1">
@@ -2976,7 +2976,7 @@ const FlowChat = () => {
                           console.log('🔍 onCreateThread function details:', onCreateThread);
                           if (onCreateThread) {
                             console.log('🔍 Calling onCreateThread with message.id:', message.id);
-                            onCreateThread(message.id);
+                          onCreateThread(message.id);
                             console.log('🔍 onCreateThread call completed');
                           } else {
                             console.error('❌ onCreateThread is not defined!');

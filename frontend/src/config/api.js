@@ -1,7 +1,7 @@
 // API Configuration
 const API_BASE_URL = process.env.REACT_APP_API_URL || 
   (process.env.NODE_ENV === 'production' 
-    ? 'https://your-vercel-app.vercel.app/api' 
+    ? 'https://tredy-segevs-projects-4be0c494.vercel.app/api' 
     : 'http://localhost:5001/api');
 
 export default API_BASE_URL;
