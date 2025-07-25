@@ -190,7 +190,7 @@ const FlowChat = () => {
       return () => {
         collaborationService.cleanup();
       };
-    }, []);
+    }, [currentSessionId]);
   
     // Core Functions
     const generateId = () => `id-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
@@ -654,33 +654,7 @@ const FlowChat = () => {
       }
     };
   
-    const generateContextualSuggestions = (threadId, selectedText, parentMsgId) => {
-      const suggestions = [
-        {
-          text: `How does "${selectedText}" work in practice?`,
-          type: 'practical',
-          context: selectedText,
-          priority: 'high'
-        },
-        {
-          text: `What are alternatives to "${selectedText}"?`,
-          type: 'alternatives',
-          context: selectedText,
-          priority: 'medium'
-        },
-        {
-          text: `What problems does "${selectedText}" solve?`,
-          type: 'problems',
-          context: selectedText,
-          priority: 'medium'
-        }
-      ];
-  
-      setSuggestedThreads(prev => ({
-        ...prev,
-        [threadId]: suggestions
-      }));
-    };
+        // Removed unused function generateContextualSuggestions
   
     const createSuggestedThread = (parentMsgId, suggestion, parentThreadId = null, preferredModel = null) => {
       try {
@@ -2350,7 +2324,6 @@ const FlowChat = () => {
       const [targetType, setTargetType] = useState('main');
       const [targetThread, setTargetThread] = useState('');
       const [summaryModel, setSummaryModel] = useState(currentModel);
-      const [exportThreadId, setExportThreadId] = useState(null);
 
       if (!exportOutcomeModal.open) return null;
 
@@ -3162,7 +3135,6 @@ const FlowChat = () => {
       const threadMessages = getThreadMessages(thread.id);
       const childThreads = getChildThreads(thread.id);
       const siblings = getSiblingThreads(thread.parentMsgId, thread.parentThreadId);
-      const currentIndex = siblings.findIndex(t => t.id === thread.id);
       const isCollapsed = !thread.isExpanded;
       
       // Simplified color system based on thread type
