@@ -62,13 +62,11 @@ const FlowChat = () => {
     const [compactMode, setCompactMode] = useState(false);
     
     // Enhanced UX States
-    const [hoveredMessage, setHoveredMessage] = useState(null);
     const [showQuickActions, setShowQuickActions] = useState(false);
     const [modelDropdownOpen, setModelDropdownOpen] = useState(false);
     const [threadModelDropdownOpen, setThreadModelDropdownOpen] = useState(false);
     
     // Collaboration States
-    const [collaborators, setCollaborators] = useState([]);
     const [activeUsers, setActiveUsers] = useState([]);
     const [inviteModal, setInviteModal] = useState(false);
     const [currentInviteThread, setCurrentInviteThread] = useState(null);
@@ -1676,7 +1674,6 @@ const FlowChat = () => {
 
       if (!memoryModal.open) return null;
 
-      const currentThread = threads.find(t => t.id === memoryModal.threadId);
       const threadMemory = threadMemories[memoryModal.threadId];
       const groupMemory = groupMemories[Object.keys(groupMemories).find(key => 
         groupMemories[key].threadIds.includes(memoryModal.threadId)
@@ -3134,7 +3131,6 @@ const FlowChat = () => {
     }) => {
       const threadMessages = getThreadMessages(thread.id);
       const childThreads = getChildThreads(thread.id);
-      const siblings = getSiblingThreads(thread.parentMsgId, thread.parentThreadId);
       const isCollapsed = !thread.isExpanded;
       
       // Simplified color system based on thread type
