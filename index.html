@@ -1,0 +1,4296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tredy - The AI Thinking OS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * { 
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html, body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: radial-gradient(ellipse at center, #0a0a0a 0%, #000000 50%, #0a0a0a 100%),
+                        radial-gradient(circle at 20% 80%, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 20%, rgba(239, 68, 68, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 40% 40%, rgba(139, 92, 246, 0.08) 0%, transparent 50%);
+            background-attachment: fixed;
+            color: #fff;
+            line-height: 1.5;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(2px 2px at 20px 30px, rgba(255, 255, 255, 0.1), transparent),
+                radial-gradient(2px 2px at 40px 70px, rgba(255, 255, 255, 0.1), transparent),
+                radial-gradient(1px 1px at 90px 40px, rgba(255, 255, 255, 0.1), transparent),
+                radial-gradient(1px 1px at 130px 80px, rgba(255, 255, 255, 0.1), transparent),
+                radial-gradient(2px 2px at 160px 30px, rgba(255, 255, 255, 0.1), transparent);
+            background-repeat: repeat;
+            background-size: 200px 100px;
+            animation: stars 20s linear infinite;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        @keyframes stars {
+            0% { transform: translateY(0px); }
+            100% { transform: translateY(-100px); }
+        }
+
+        .container {
+            max-width: 100vw;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Navigation */
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(30px);
+            border-bottom: 1px solid rgba(139, 92, 246, 0.2);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .nav-content {
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: #fff;
+        }
+
+        .logo-mark {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #8b5cf6 0%, #ef4444 100%);
+            border: 2px solid rgba(139, 92, 246, 0.3);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            font-size: 18px;
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .logo-mark:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 16px rgba(139, 92, 246, 0.4);
+        }
+
+        .logo-text {
+            font-size: 1.125rem;
+            font-weight: 700;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .nav-link {
+            color: #999;
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .btn-primary {
+            background: #fff;
+            color: #000;
+            padding: 8px 16px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.875rem;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            padding-top: 80px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background: radial-gradient(ellipse at center, rgba(139, 92, 246, 0.05) 0%, transparent 70%);
+        }
+
+        .hero-content {
+            max-width: 800px;
+            margin-bottom: 48px;
+        }
+
+        .hero-title {
+            font-size: clamp(3rem, 8vw, 5rem);
+            font-weight: 800;
+            line-height: 0.9;
+            letter-spacing: -0.04em;
+            margin-bottom: 24px;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1.125rem, 2.5vw, 1.5rem);
+            color: #999;
+            margin-bottom: 32px;
+            line-height: 1.4;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 48px;
+        }
+
+        /* Flow Diagram */
+        .flow-diagram {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin: 40px 0;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+        }
+
+        .flow-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+        }
+
+        .flow-icon {
+            font-size: 2rem;
+            background: linear-gradient(135deg, #8b5cf6, #3b82f6);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 32px rgba(139, 92, 246, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .flow-step:hover .flow-icon {
+            transform: scale(1.1);
+            box-shadow: 0 12px 40px rgba(139, 92, 246, 0.4);
+        }
+
+        .flow-text {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #fff;
+            text-align: center;
+        }
+
+        .flow-arrow {
+            font-size: 1.5rem;
+            color: #8b5cf6;
+            font-weight: bold;
+            margin: 0 10px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+
+        .button-icon {
+            margin-right: 8px;
+        }
+
+        /* Flow Diagram */
+        .flow-diagram {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin: 40px 0;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+        }
+
+        .flow-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+        }
+
+        .flow-icon {
+            font-size: 2rem;
+            background: linear-gradient(135deg, #8b5cf6, #3b82f6);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 32px rgba(139, 92, 246, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .flow-step:hover .flow-icon {
+            transform: scale(1.1);
+            box-shadow: 0 12px 40px rgba(139, 92, 246, 0.4);
+        }
+
+        .flow-text {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #fff;
+            text-align: center;
+        }
+
+        .flow-arrow {
+            font-size: 1.5rem;
+            color: #8b5cf6;
+            font-weight: bold;
+            margin: 0 10px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+
+        .button-icon {
+            margin-right: 8px;
+        }
+
+        /* Thread Dropdown Styles */
+        .thread-dropdown-container {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .thread-dropdown-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .thread-dropdown-header:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .current-thread-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .thread-icon {
+            font-size: 1.25rem;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            flex-shrink: 0;
+        }
+
+        .thread-details {
+            flex: 1;
+        }
+
+        .thread-name {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 2px;
+        }
+
+        .thread-status {
+            font-size: 0.75rem;
+            color: #999;
+        }
+
+        .thread-dropdown-toggle {
+            background: none;
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .thread-dropdown-toggle:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .thread-dropdown-toggle svg {
+            transition: transform 0.3s ease;
+        }
+
+        .thread-dropdown-toggle.open svg {
+            transform: rotate(180deg);
+        }
+
+        .thread-dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            margin-top: 4px;
+            padding: 8px;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            backdrop-filter: blur(20px);
+        }
+
+        .thread-dropdown-menu.open {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #fff;
+        }
+
+        .dropdown-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .dropdown-item.active {
+            background: rgba(34, 197, 94, 0.2);
+        }
+
+        .dropdown-item .thread-info {
+            flex: 1;
+        }
+
+        .dropdown-item .thread-name {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 2px;
+        }
+
+                .dropdown-item .thread-status {
+            font-size: 0.75rem;
+            color: #999;
+        }
+
+        .thread-nav-btn.active .thread-status {
+            color: #22c55e;
+        }
+
+        .thread-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: transparent;
+            transition: all 0.3s ease;
+        }
+
+        /* Mobile responsive */
+        @media (max-width: 768px) {
+            .thread-nav-buttons {
+                gap: 6px;
+            }
+            
+            .thread-nav-btn {
+                padding: 10px;
+                gap: 10px;
+            }
+            
+            .thread-icon {
+                width: 28px;
+                height: 28px;
+                font-size: 1rem;
+            }
+        }
+
+        .btn-large {
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary-large {
+            background: #8b5cf6;
+            color: #fff;
+        }
+
+        .btn-primary-large:hover {
+            background: #7c3aed;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary-large {
+            background: transparent;
+            color: #fff;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .btn-secondary-large:hover {
+            border-color: rgba(255,255,255,0.4);
+            background: rgba(255,255,255,0.05);
+        }
+
+        /* Next-Gen Flow Diagram */
+        .flow-diagram-nextgen {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 40px;
+            margin: 60px 0;
+            padding: 40px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%);
+            border-radius: 24px;
+            backdrop-filter: blur(30px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .flow-diagram-nextgen::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.05) 50%, transparent 70%);
+            animation: shimmer 3s infinite;
+        }
+
+        .flow-step-nextgen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .flow-icon-nextgen {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .icon-bg {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #8b5cf6 0%, #ef4444 100%);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            box-shadow: 0 12px 40px rgba(139, 92, 246, 0.4);
+            animation: float 3s ease-in-out infinite;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .icon-bg::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            animation: shine 2s infinite;
+        }
+
+        .flow-text-nextgen {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: #fff;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            letter-spacing: 0.5px;
+        }
+
+        .flow-arrow-nextgen {
+            color: #8b5cf6;
+            margin: 0 20px;
+            animation: slide 2s ease-in-out infinite;
+        }
+
+        .flow-arrow-nextgen svg {
+            filter: drop-shadow(0 2px 4px rgba(139, 92, 246, 0.3));
+        }
+
+        /* Next-Gen Buttons */
+        .hero-buttons-nextgen {
+            display: flex;
+            gap: 20px;
+            margin-top: 40px;
+            justify-content: center;
+        }
+
+        .btn-nextgen {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 32px;
+            border-radius: 16px;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary-nextgen {
+            background: linear-gradient(135deg, #8b5cf6 0%, #ef4444 100%);
+            color: white;
+            box-shadow: 0 8px 32px rgba(139, 92, 246, 0.4);
+        }
+
+        .btn-primary-nextgen:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(139, 92, 246, 0.6);
+        }
+
+        .btn-secondary-nextgen {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-secondary-nextgen:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .btn-icon {
+            font-size: 1.25rem;
+        }
+
+        .btn-text {
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        /* Animations */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        @keyframes slide {
+            0%, 100% { transform: translateX(0); }
+            50% { transform: translateX(4px); }
+        }
+
+        /* Hero Header */
+        .hero-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .hero-title {
+            font-size: 4rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #fff 0%, #8b5cf6 50%, #ef4444 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 24px;
+            letter-spacing: -1px;
+            line-height: 1.1;
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: rgba(255, 255, 255, 0.8);
+            max-width: 800px;
+            margin: 0 auto 1rem;
+            line-height: 1.6;
+            font-weight: 400;
+        }
+
+        .hero-description {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.6);
+            max-width: 800px;
+            margin: 0 auto 2rem;
+            line-height: 1.5;
+            font-weight: 400;
+        }
+
+        /* Simple Flow Diagram */
+        .flow-diagram-simple {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 24px;
+            margin: 2rem 0;
+        }
+
+        .flow-step-simple {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .flow-icon-simple {
+            width: 48px;
+            height: 48px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .flow-text-simple {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #fff;
+            text-align: center;
+        }
+
+        .flow-arrow-simple {
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: -8px;
+        }
+
+        /* Modern Hero Actions */
+        .hero-actions {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            margin-top: 3rem;
+        }
+
+        .action-btn {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            text-decoration: none;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: none;
+            cursor: pointer;
+            overflow: hidden;
+            min-width: 200px;
+        }
+
+        .primary-action {
+            background: linear-gradient(135deg, #8b5cf6 0%, #ef4444 100%);
+            color: #fff;
+            box-shadow: 0 8px 32px rgba(139, 92, 246, 0.4);
+        }
+
+        .primary-action:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 16px 48px rgba(139, 92, 246, 0.6);
+        }
+
+        .primary-action .btn-glow {
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .primary-action:hover .btn-glow {
+            left: 100%;
+        }
+
+        .secondary-action {
+            background: rgba(255, 255, 255, 0.05);
+            color: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .secondary-action:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            transform: translateY(-2px);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-content {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 1;
+            position: relative;
+        }
+
+        .btn-icon {
+            font-size: 1.25rem;
+        }
+
+        .btn-text {
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .btn-arrow {
+            font-size: 1.125rem;
+            transition: transform 0.3s ease;
+        }
+
+        .secondary-action:hover .btn-arrow {
+            transform: translateX(4px);
+        }
+
+        .action-divider {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .action-divider::before,
+        .action-divider::after {
+            content: '';
+            width: 40px;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Interactive Demo Section */
+        .demo-section {
+            min-height: 100vh;
+            padding: 80px 0;
+            background: rgba(255, 255, 255, 0.01);
+        }
+
+        .demo-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .demo-header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .demo-title {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .demo-subtitle {
+            font-size: 1.25rem;
+            color: #999;
+            margin-bottom: 24px;
+        }
+
+        .workflow-steps {
+            display: flex;
+            justify-content: center;
+            gap: 32px;
+            margin-bottom: 48px;
+            flex-wrap: wrap;
+        }
+
+        .workflow-step {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 24px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            font-weight: 500;
+        }
+
+        .step-number {
+            width: 24px;
+            height: 24px;
+            background: #8b5cf6;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        /* Three-Panel Demo Layout */
+        .demo-panels {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 24px;
+            height: 700px;
+        }
+
+        .demo-panel {
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .panel-header {
+            background: rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .panel-participants {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-left: auto;
+        }
+
+        .participants-avatars {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .participant-avatar-mini {
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.625rem;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.2s ease;
+        }
+
+        .participant-avatar-mini:hover {
+            transform: scale(1.1);
+            border-color: rgba(139, 92, 246, 0.3);
+        }
+
+        .add-participant-header-btn {
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            color: #22c55e;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 4px;
+        }
+
+        .add-participant-header-btn:hover {
+            background: rgba(34, 197, 94, 0.2);
+            border-color: rgba(34, 197, 94, 0.5);
+            transform: scale(1.1);
+        }
+
+        .panel-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .highlight-icon { background: rgba(245, 158, 11, 0.2); color: #f59e0b; }
+        .thread-icon { background: rgba(59, 130, 246, 0.2); color: #3b82f6; }
+        .share-icon { background: rgba(34, 197, 94, 0.2); color: #22c55e; }
+
+        .panel-title {
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .panel-content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        /* Chat Messages */
+        .message {
+            margin-bottom: 16px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .message-avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .avatar-user { background: #3b82f6; color: #fff; }
+        .avatar-ai { background: #8b5cf6; color: #fff; }
+
+        .message-content {
+            flex: 1;
+        }
+
+        .message-text {
+            font-size: 0.875rem;
+            line-height: 1.6;
+            color: #e5e5e5;
+            user-select: text;
+            cursor: text;
+        }
+
+        /* Highlightable Text */
+        .highlightable {
+            position: relative;
+            transition: all 0.2s ease;
+        }
+
+        .highlightable:hover {
+            background: rgba(245, 158, 11, 0.1);
+            border-radius: 4px;
+            padding: 2px 4px;
+            margin: -2px -4px;
+        }
+
+        .highlightable.selected {
+            background: rgba(245, 158, 11, 0.2);
+            border: 1px solid rgba(245, 158, 11, 0.4);
+            border-radius: 4px;
+            padding: 2px 4px;
+            margin: -2px -4px;
+        }
+
+        .highlight-tooltip {
+            position: absolute;
+            background: #000;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 8px;
+            z-index: 50;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            display: none;
+        }
+
+        .highlight-tooltip.show {
+            display: block;
+        }
+
+        .tooltip-button {
+            padding: 6px 12px;
+            background: rgba(245, 158, 11, 0.2);
+            border: 1px solid rgba(245, 158, 11, 0.4);
+            border-radius: 4px;
+            color: #f59e0b;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .tooltip-button:hover {
+            background: rgba(245, 158, 11, 0.3);
+        }
+
+        /* Thread Panel */
+        .thread-panel {
+            background: rgba(59, 130, 246, 0.05);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        .thread-workspace {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .workspace-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .workspace-title {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #3b82f6;
+        }
+
+        .boost-button {
+            padding: 4px 8px;
+            background: rgba(59, 130, 246, 0.2);
+            border: 1px solid rgba(59, 130, 246, 0.4);
+            border-radius: 4px;
+            color: #3b82f6;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .boost-button:hover {
+            background: rgba(59, 130, 246, 0.3);
+        }
+
+        .ai-response {
+            font-size: 0.875rem;
+            color: #ccc;
+            line-height: 1.5;
+        }
+
+        /* Share Panel */
+        .share-panel {
+            background: rgba(34, 197, 94, 0.05);
+            border: 1px solid rgba(34, 197, 94, 0.2);
+        }
+
+        .collaborator-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .collaborator-item:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(34, 197, 94, 0.3);
+        }
+
+        .collaborator-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+        .avatar-gpt { background: #10a37f; }
+        .avatar-claude { background: #ff6600; }
+        .avatar-gemini { background: #4285f4; }
+        .avatar-person { background: #8b5cf6; }
+        .avatar-veo { background: #ec4899; color: #fff; }
+        .avatar-sora { background: #3b82f6; color: #fff; }
+        .avatar-corser { background: #f59e0b; color: #fff; }
+        .avatar-midjourney { background: #8b5cf6; color: #fff; }
+        .avatar-dalle { background: #10a37f; color: #fff; }
+        .avatar-claude-sonnet { background: #ff6600; color: #fff; }
+
+        .collaborator-info {
+            flex: 1;
+        }
+
+        .collaborator-name {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #fff;
+        }
+
+        .collaborator-role {
+            font-size: 0.75rem;
+            color: #999;
+        }
+
+        .invite-button {
+            padding: 8px 16px;
+            background: rgba(34, 197, 94, 0.2);
+            border: 1px solid rgba(34, 197, 94, 0.4);
+            border-radius: 6px;
+            color: #22c55e;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        .invite-button:hover {
+            background: rgba(34, 197, 94, 0.3);
+        }
+
+        /* Live Collaboration */
+        .live-collaboration {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .collaboration-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .collaboration-icon {
+            font-size: 1.25rem;
+            color: #8b5cf6;
+        }
+
+        .collaboration-info {
+            flex: 1;
+        }
+
+        .collaboration-title {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 2px;
+        }
+
+        .collaboration-count {
+            font-size: 0.75rem;
+            color: #999;
+        }
+
+        .add-participant-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            color: #22c55e;
+            font-size: 1.125rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .add-participant-btn:hover {
+            background: rgba(34, 197, 94, 0.2);
+            border-color: rgba(34, 197, 94, 0.5);
+            transform: scale(1.05);
+        }
+
+        .participants-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+        }
+
+        .participant-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .participant-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .participant-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.75rem;
+            flex-shrink: 0;
+        }
+
+        .participant-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .participant-name {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .participant-role {
+            font-size: 0.75rem;
+            color: #999;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .participant-status {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .participant-status.online {
+            background: #22c55e;
+            animation: pulse 2s infinite;
+        }
+
+        .participant-status.ai {
+            background: #8b5cf6;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.1); }
+        }
+
+        /* Live Activity (old styles - keeping for reference) */
+        .live-activity {
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 16px;
+        }
+
+        .activity-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .activity-dot {
+            width: 8px;
+            height: 8px;
+            background: #22c55e;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        .activity-text {
+            font-size: 0.75rem;
+            color: #22c55e;
+            font-weight: 600;
+        }
+
+        .activity-description {
+            font-size: 0.75rem;
+            color: #ccc;
+            line-height: 1.4;
+        }
+
+        /* Typing Indicators */
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 12px 0;
+        }
+
+        .typing-dots {
+            display: flex;
+            gap: 4px;
+        }
+
+        .typing-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #999;
+            animation: typing 1.5s infinite ease-in-out;
+        }
+
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes typing {
+            0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+            30% { transform: translateY(-6px); opacity: 1; }
+        }
+
+        /* Animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 0.8s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .delay-1 { animation-delay: 0.2s; }
+        .delay-2 { animation-delay: 0.4s; }
+        .delay-3 { animation-delay: 0.6s; }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .demo-panels {
+                grid-template-columns: 1fr;
+                gap: 16px;
+                height: auto;
+            }
+            
+            .demo-panel {
+                height: 500px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .workflow-steps { 
+                flex-direction: column; 
+                align-items: center;
+            }
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+
+        /* Success States */
+        .success-highlight {
+            background: rgba(34, 197, 94, 0.2);
+            border: 1px solid rgba(34, 197, 94, 0.4);
+            border-radius: 4px;
+            padding: 2px 4px;
+            margin: -2px -4px;
+        }
+
+        .thread-created {
+            border: 2px solid #22c55e;
+            animation: glow 2s ease-in-out;
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 5px rgba(34, 197, 94, 0.3); }
+            50% { box-shadow: 0 0 20px rgba(34, 197, 94, 0.6); }
+        }
+
+        /* Features Section */
+        .features-section {
+            padding: 120px 0;
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .section-title {
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .section-subtitle {
+            font-size: 1.25rem;
+            color: #999;
+            text-align: center;
+            margin-bottom: 64px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 32px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 32px;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(139, 92, 246, 0.3);
+            transform: translateY(-4px);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        .feature-card h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #fff;
+        }
+
+        .feature-card p {
+            color: #ccc;
+            line-height: 1.6;
+        }
+
+        /* Use Cases Section */
+        .use-cases-section {
+            padding: 120px 0;
+            background: rgba(139, 92, 246, 0.03);
+        }
+
+        .use-cases-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 32px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .use-case-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 32px;
+            transition: all 0.3s ease;
+        }
+
+        .use-case-card:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(139, 92, 246, 0.3);
+        }
+
+        .use-case-icon {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        .use-case-card h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #fff;
+        }
+
+        .use-case-card p {
+            color: #ccc;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .use-case-card ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .use-case-card li {
+            color: #999;
+            padding: 4px 0;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .use-case-card li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #8b5cf6;
+            font-weight: 600;
+        }
+
+        /* Testimonials Section */
+        .testimonials-section {
+            padding: 120px 0;
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 32px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .testimonial-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 32px;
+            transition: all 0.3s ease;
+        }
+
+        .testimonial-card:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(139, 92, 246, 0.3);
+        }
+
+        .testimonial-content p {
+            color: #ccc;
+            line-height: 1.6;
+            font-style: italic;
+            margin-bottom: 24px;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .author-avatar {
+            width: 40px;
+            height: 40px;
+            background: #8b5cf6;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .author-name {
+            font-weight: 600;
+            color: #fff;
+            font-size: 0.875rem;
+        }
+
+        .author-title {
+            color: #999;
+            font-size: 0.75rem;
+        }
+
+        /* Pricing Section */
+        .pricing-section {
+            padding: 120px 0;
+            background: rgba(139, 92, 246, 0.03);
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 32px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .pricing-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 32px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .pricing-card.featured {
+            border-color: rgba(139, 92, 246, 0.5);
+            background: rgba(139, 92, 246, 0.05);
+        }
+
+        .pricing-badge {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #8b5cf6;
+            color: #fff;
+            padding: 4px 16px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .pricing-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .pricing-header h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #fff;
+        }
+
+        .price {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 8px;
+        }
+
+        .price span {
+            font-size: 1rem;
+            color: #999;
+            font-weight: 400;
+        }
+
+        .pricing-header p {
+            color: #999;
+        }
+
+        .pricing-features {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 32px;
+        }
+
+        .pricing-features li {
+            color: #ccc;
+            padding: 8px 0;
+            position: relative;
+            padding-left: 24px;
+        }
+
+        .pricing-features li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #8b5cf6;
+            font-weight: 600;
+        }
+
+        .pricing-btn {
+            display: block;
+            width: 100%;
+            padding: 12px 24px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: #fff;
+            text-decoration: none;
+            text-align: center;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .pricing-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .pricing-btn.featured {
+            background: #8b5cf6;
+            border-color: #8b5cf6;
+        }
+
+        .pricing-btn.featured:hover {
+            background: #7c3aed;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            padding: 120px 0;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(59, 130, 246, 0.1) 100%);
+        }
+
+        .cta-content {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .cta-content h2 {
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .cta-content p {
+            font-size: 1.25rem;
+            color: #999;
+            margin-bottom: 32px;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            margin-bottom: 48px;
+            flex-wrap: wrap;
+        }
+
+        .cta-stats {
+            display: flex;
+            justify-content: center;
+            gap: 48px;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            color: #999;
+            font-size: 0.875rem;
+        }
+
+        /* Footer */
+        .footer {
+            background: rgba(0, 0, 0, 0.8);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 80px 0 40px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+            gap: 48px;
+            margin-bottom: 48px;
+        }
+
+        .footer-section h4 {
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 16px;
+        }
+
+        .footer-section ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-section li {
+            margin-bottom: 8px;
+        }
+
+        .footer-section a {
+            color: #999;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .footer-section a:hover {
+            color: #fff;
+        }
+
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .footer-section p {
+            color: #999;
+            margin-bottom: 24px;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 16px;
+        }
+
+        .social-link {
+            color: #999;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .social-link:hover {
+            color: #fff;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 24px;
+            text-align: center;
+            color: #999;
+        }
+
+        /* Boost Options */
+        .boost-option {
+            padding: 8px 12px;
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            border-radius: 6px;
+            color: #22c55e;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .boost-option:hover {
+            background: rgba(34, 197, 94, 0.2);
+            border-color: rgba(34, 197, 94, 0.5);
+        }
+
+        /* Avatar for person */
+        .avatar-person { background: #8b5cf6; color: #fff; }
+
+        /* Insight Buttons */
+        .insight-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.75rem;
+            min-width: 60px;
+        }
+
+        .gpt-btn {
+            background: rgba(16, 163, 127, 0.1);
+            border-color: rgba(16, 163, 127, 0.3);
+            color: #10a37f;
+        }
+
+        .gpt-btn:hover {
+            background: rgba(16, 163, 127, 0.2);
+            border-color: rgba(16, 163, 127, 0.5);
+        }
+
+        .claude-btn {
+            background: rgba(255, 102, 0, 0.1);
+            border-color: rgba(255, 102, 0, 0.3);
+            color: #ff6600;
+        }
+
+        .claude-btn:hover {
+            background: rgba(255, 102, 0, 0.2);
+            border-color: rgba(255, 102, 0, 0.5);
+        }
+
+        .gemini-btn {
+            background: rgba(66, 133, 244, 0.1);
+            border-color: rgba(66, 133, 244, 0.3);
+            color: #4285f4;
+        }
+
+        .gemini-btn:hover {
+            background: rgba(66, 133, 244, 0.2);
+            border-color: rgba(66, 133, 244, 0.5);
+        }
+
+        /* Summary Button */
+        .summary-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(139, 92, 246, 0.1);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 8px;
+            color: #8b5cf6;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 600;
+        }
+
+        .summary-btn:hover {
+            background: rgba(139, 92, 246, 0.2);
+            border-color: rgba(139, 92, 246, 0.5);
+            transform: translateY(-1px);
+        }
+
+        /* Partners & Integrations Section */
+        .partners-section {
+            padding: 120px 0;
+            background: #000;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .partners-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(139, 92, 246, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(16, 163, 127, 0.02) 0%, transparent 50%),
+                radial-gradient(circle at 40% 80%, rgba(66, 133, 244, 0.02) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .partners-header {
+            text-align: center;
+            margin-bottom: 80px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .partners-header .section-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #fff 0%, #e5e5e5 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 24px;
+            letter-spacing: -0.02em;
+        }
+
+        .partners-header .section-subtitle {
+            font-size: 1.25rem;
+            color: #999;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .ai-models-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 80px;
+            margin-bottom: 80px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .model-category {
+            background: rgba(255, 255, 255, 0.015);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 24px;
+            padding: 48px;
+            backdrop-filter: blur(20px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .model-category::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.1) 50%, transparent 100%);
+        }
+
+        .category-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 40px;
+            text-align: center;
+            letter-spacing: -0.01em;
+            position: relative;
+        }
+
+        .category-title::after {
+            content: '';
+            position: absolute;
+            bottom: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 2px;
+            background: linear-gradient(90deg, #8b5cf6, #10a37f);
+            border-radius: 1px;
+        }
+
+        .models-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+        }
+
+        .model-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 16px;
+            padding: 24px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .model-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.02) 0%, transparent 50%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .model-card:hover {
+            background: rgba(255, 255, 255, 0.04);
+            border-color: rgba(139, 92, 246, 0.2);
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .model-card:hover::before {
+            opacity: 1;
+        }
+
+        .model-avatar {
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1rem;
+            flex-shrink: 0;
+            position: relative;
+            z-index: 2;
+        }
+
+        .model-avatar::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent);
+            border-radius: 18px;
+            z-index: -1;
+        }
+
+        .model-info {
+            flex: 1;
+        }
+
+        .model-info {
+            position: relative;
+            z-index: 2;
+        }
+
+        .model-info h4 {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 6px;
+            letter-spacing: -0.01em;
+        }
+
+        .model-info p {
+            font-size: 0.875rem;
+            color: #999;
+            margin-bottom: 12px;
+            line-height: 1.5;
+        }
+
+        .model-tags {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            background: rgba(139, 92, 246, 0.15);
+            color: #8b5cf6;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.625rem;
+            font-weight: 600;
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            transition: all 0.2s ease;
+        }
+
+        .tag:hover {
+            background: rgba(139, 92, 246, 0.25);
+            border-color: rgba(139, 92, 246, 0.4);
+        }
+
+        /* Integration Features */
+        .integration-features {
+            margin-bottom: 80px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 32px;
+        }
+
+        .integration-feature {
+            background: rgba(255, 255, 255, 0.015);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 20px;
+            padding: 32px;
+            text-align: center;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .integration-feature::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(16, 163, 127, 0.02) 0%, transparent 50%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .integration-feature:hover {
+            background: rgba(255, 255, 255, 0.03);
+            border-color: rgba(16, 163, 127, 0.2);
+            transform: translateY(-6px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
+        }
+
+        .integration-feature:hover::before {
+            opacity: 1;
+        }
+
+        .integration-feature .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .integration-feature h4 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 12px;
+            letter-spacing: -0.01em;
+            position: relative;
+            z-index: 2;
+        }
+
+        .integration-feature p {
+            font-size: 0.875rem;
+            color: #999;
+            line-height: 1.6;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Coming Soon */
+        .coming-soon {
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .coming-soon-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 40px;
+            letter-spacing: -0.01em;
+        }
+
+        .coming-soon-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .coming-soon-item {
+            background: rgba(255, 255, 255, 0.015);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .coming-soon-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(66, 133, 244, 0.02) 0%, transparent 50%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .coming-soon-item:hover {
+            background: rgba(255, 255, 255, 0.03);
+            border-color: rgba(66, 133, 244, 0.2);
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .coming-soon-item:hover::before {
+            opacity: 1;
+        }
+
+        .coming-soon-icon {
+            font-size: 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .coming-soon-item span {
+            font-size: 0.75rem;
+            color: #999;
+            font-weight: 600;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Logo Carousel */
+        .logo-carousel-container {
+            margin: 80px 0;
+            position: relative;
+            z-index: 2;
+            overflow: hidden;
+        }
+
+        .carousel-track {
+            display: flex;
+            animation: carousel-scroll 30s linear infinite;
+            width: max-content;
+        }
+
+        @keyframes carousel-scroll {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+
+        .carousel-slide {
+            display: flex;
+            gap: 40px;
+            padding: 0 20px;
+        }
+
+        .logo-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            min-width: 120px;
+            padding: 24px 16px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 16px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .logo-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.02) 0%, transparent 50%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .logo-item:hover {
+            background: rgba(255, 255, 255, 0.04);
+            border-color: rgba(139, 92, 246, 0.2);
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
+        }
+
+        .logo-item:hover::before {
+            opacity: 1;
+        }
+
+        .logo-icon {
+            font-size: 2.5rem;
+            position: relative;
+            z-index: 2;
+            filter: grayscale(0.3);
+            transition: all 0.4s ease;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-icon svg {
+            width: 100%;
+            height: 100%;
+            filter: grayscale(0.3);
+            transition: all 0.4s ease;
+        }
+
+        .logo-item:hover .logo-icon svg {
+            filter: grayscale(0);
+            transform: scale(1.1);
+        }
+
+        /* Company-specific logo colors */
+        .openai-logo svg { color: #10a37f; }
+        .anthropic-logo svg { color: #ff6600; }
+        .google-logo svg { color: #4285f4; }
+        .midjourney-logo svg { color: #8b5cf6; }
+        .sora-logo svg { color: #3b82f6; }
+        .udio-logo svg { color: #ec4899; }
+        .perplexity-logo svg { color: #f59e0b; }
+        .characterai-logo svg { color: #10a37f; }
+        .stablediffusion-logo svg { color: #8b5cf6; }
+        .cohere-logo svg { color: #22c55e; }
+        .piai-logo svg { color: #3b82f6; }
+        .notionai-logo svg { color: #000; }
+
+        .logo-item span {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #999;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+            transition: color 0.4s ease;
+        }
+
+        .logo-item:hover span {
+            color: #fff;
+        }
+
+        /* Pause animation on hover */
+        .logo-carousel-container:hover .carousel-track {
+            animation-play-state: paused;
+        }
+
+        /* Responsive adjustments for partners section */
+        @media (max-width: 768px) {
+            .partners-section {
+                padding: 60px 0;
+            }
+
+            .model-category {
+                padding: 24px;
+            }
+
+            .models-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .model-card {
+                padding: 16px;
+            }
+
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .coming-soon-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .logo-carousel-container {
+                margin: 40px 0;
+            }
+
+            .carousel-slide {
+                gap: 20px;
+                padding: 0 10px;
+            }
+
+            .logo-item {
+                min-width: 100px;
+                padding: 16px 12px;
+            }
+
+            .logo-icon {
+                font-size: 2rem;
+            }
+
+            .logo-item span {
+                font-size: 0.75rem;
+            }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .features-grid,
+            .use-cases-grid,
+            .testimonials-grid,
+            .pricing-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 32px;
+            }
+
+            .cta-stats {
+                gap: 24px;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-content">
+            <a href="#" class="logo">
+                <div class="logo-mark">T</div>
+                <span class="logo-text">Tredy</span>
+            </a>
+            <div class="nav-links">
+                <a href="#demo" class="nav-link">Live Demo</a>
+                <a href="#" class="nav-link">Features</a>
+                <a href="#" class="nav-link">Pricing</a>
+                <a href="#" class="btn-primary">Try Free</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="hero-content fade-in">
+            <div class="hero-header">
+            <h1 class="hero-title">
+                    Thread. Boost. Share.
+            </h1>
+            <p class="hero-subtitle">
+                    Transform chaotic AI chats into organized, collaborative intelligence.
+                </p>
+                <p class="hero-description">
+                    Turn any passage into a focused thread, super-charge it with any model, then invite collaborators - instantly.
+            </p>
+            </div>
+            
+
+            
+            <div class="hero-actions">
+                <button class="action-btn primary-action" onclick="startChat()">
+                    <div class="btn-content">
+                        <div class="btn-icon">🚀</div>
+                        <div class="btn-text">Chat</div>
+                    </div>
+                    <div class="btn-glow"></div>
+                </button>
+                <div class="action-divider">
+                    <span>or</span>
+                </div>
+                <a href="#demo" class="action-btn secondary-action">
+                    <div class="btn-content">
+                        <div class="btn-text">Try Interactive Demo</div>
+                        <div class="btn-arrow">→</div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Demo -->
+    <section id="demo" class="demo-section">
+        <div class="demo-container">
+            <div class="demo-header fade-in">
+                <h2 class="demo-title">Experience the Future</h2>
+                <p class="demo-subtitle">Real working demo - click and interact with everything below</p>
+                
+                <div class="workflow-steps">
+                    <div class="workflow-step">
+                        <div class="step-number">1</div>
+                        <span>Highlight text in chat</span>
+                    </div>
+                    <div class="workflow-step">
+                        <div class="step-number">2</div>
+                        <span>Thread auto-creates</span>
+                    </div>
+                    <div class="workflow-step">
+                        <div class="step-number">3</div>
+                        <span>Boost with AI experts</span>
+                    </div>
+                    <div class="workflow-step">
+                        <div class="step-number">4</div>
+                        <span>Share & collaborate</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="demo-panels fade-in delay-1">
+                <!-- Left Panel: Normal Chat with Highlighting -->
+                <div class="demo-panel">
+                    <div class="panel-header">
+                        <div class="panel-icon highlight-icon">💡</div>
+                        <div class="panel-title">1. Highlight → Create Thread</div>
+           
+                    </div>
+                    <div class="panel-content" id="main-chat">
+                        <!-- User Message -->
+                        <div class="message">
+                            <div class="message-avatar avatar-user">U</div>
+                            <div class="message-content">
+                                <div class="message-text">
+                                    I'm building an AI startup and need help with technical architecture, market strategy, and funding approach. Can you break this down?
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- AI Response with Highlightable Text -->
+                        <div class="message">
+                            <div class="message-avatar avatar-ai">AI</div>
+                            <div class="message-content">
+                                <div class="message-text">
+                                    I'll help you build a comprehensive AI startup plan. Here's what you need to focus on:
+
+                                    <br><br><strong>Technical Foundation:</strong> <span class="highlightable" data-thread="tech" data-text="You'll need to choose between building custom models or using existing APIs like OpenAI/Anthropic. Consider your data pipeline, infrastructure costs, and scalability requirements.">You'll need to choose between building custom models or using existing APIs like OpenAI/Anthropic. Consider your data pipeline, infrastructure costs, and scalability requirements.</span>
+
+                                    <br><br><strong>Market Strategy:</strong> <span class="highlightable" data-thread="market" data-text="The AI market is projected to reach $1.8T by 2030. Focus on a specific vertical rather than horizontal solutions. Healthcare AI, fintech automation, and developer tools show highest growth.">The AI market is projected to reach $1.8T by 2030. Focus on a specific vertical rather than horizontal solutions. Healthcare AI, fintech automation, and developer tools show highest growth.</span>
+
+                                    <br><br><strong>Funding Approach:</strong> <span class="highlightable" data-thread="funding" data-text="AI startups typically raise $2-5M seed rounds. VCs look for defensible datasets, experienced ML teams, and clear market traction. Build an MVP with real customer validation first.">AI startups typically raise $2-5M seed rounds. VCs look for defensible datasets, experienced ML teams, and clear market traction. Build an MVP with real customer validation first.</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Instructions -->
+                        <div style="background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 8px; padding: 12px; margin-top: 20px;">
+                            <div style="font-size: 0.75rem; color: #f59e0b; font-weight: 600; margin-bottom: 4px;">
+                                👆 Try This:
+                            </div>
+                            <div style="font-size: 0.75rem; color: #ccc;">
+                                Hover over any highlighted text above and click to create a focused thread
+                            </div>
+                        </div>
+
+                        <!-- Thread Collapse Line (appears after thread creation) -->
+                        <div id="thread-collapse" style="display: none;">
+                            <div style="background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 8px; padding: 16px; margin-top: 20px;">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                        <div style="width: 20px; height: 20px; background: #3b82f6; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #fff;">🧵</div>
+                                        <div>
+                                            <div style="font-size: 0.875rem; font-weight: 600; color: #3b82f6;" id="thread-title">Market Strategy Thread</div>
+                                            <div style="font-size: 0.75rem; color: #999;">3 messages • 2 AI experts</div>
+                                        </div>
+                                    </div>
+                                    <button onclick="expandThread()" style="padding: 6px 12px; background: rgba(59, 130, 246, 0.2); border: 1px solid rgba(59, 130, 246, 0.4); border-radius: 4px; color: #3b82f6; font-size: 0.75rem; cursor: pointer;">Expand</button>
+                                </div>
+                                
+                                <!-- Generate Insight Section -->
+                                <div style="border-top: 1px solid rgba(59, 130, 246, 0.2); padding-top: 12px;">
+                                    <div style="font-size: 0.875rem; font-weight: 600; color: #fff; margin-bottom: 8px;">Generate Insight</div>
+                                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                                        <button onclick="generateInsight('gpt')" class="insight-btn gpt-btn">
+                                            <span style="font-size: 0.75rem;">🤖 GPT-4</span>
+                                            <span style="font-size: 0.625rem; opacity: 0.8;">Strategy</span>
+                                        </button>
+                                        <button onclick="generateInsight('claude')" class="insight-btn claude-btn">
+                                            <span style="font-size: 0.75rem;">🧠 Claude</span>
+                                            <span style="font-size: 0.625rem; opacity: 0.8;">Analysis</span>
+                                        </button>
+                                        <button onclick="generateInsight('gemini')" class="insight-btn gemini-btn">
+                                            <span style="font-size: 0.75rem;">💎 Gemini</span>
+                                            <span style="font-size: 0.625rem; opacity: 0.8;">Research</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Center Panel: Thread Chat with Boost -->
+                <div class="demo-panel thread-panel" id="thread-panel">
+                    <div class="panel-header">
+                        <div class="panel-icon thread-icon">🧵</div>
+                        <div class="panel-title">2. Thread Chat + Boost</div>
+                    </div>
+                    <div class="panel-content" id="thread-content">
+                        <div style="text-align: center; color: #666; font-size: 0.875rem; margin-top: 100px;">
+                            Select highlighted text to create a thread...
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Panel: Share & Collaborate -->
+                <div class="demo-panel share-panel">
+                    <div class="panel-header">
+                        <div class="panel-icon share-icon">👥</div>
+                        <div class="panel-title">3. Share & Collaborate</div>
+                        <div class="panel-participants">
+                            <div class="participants-avatars">
+                                <div class="participant-avatar-mini avatar-person">S</div>
+                                <div class="participant-avatar-mini avatar-person">M</div>
+                                <div class="participant-avatar-mini avatar-person">E</div>
+                    </div>
+                            <button class="add-participant-header-btn" onclick="addParticipant()">
+                                <span>+</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="panel-content" id="collaboration-chat">
+                        <!-- Thread Dropdown Navigation -->
+                        <div class="thread-dropdown-container">
+                            <div class="thread-dropdown-header">
+                                <div class="current-thread-info">
+                                    <div class="thread-icon">📊</div>
+                                    <div class="thread-details">
+                                        <div class="thread-name">Market Strategy</div>
+                                        <div class="thread-status">Active • 4 participants</div>
+                                    </div>
+                                </div>
+                                <button class="thread-dropdown-toggle" onclick="toggleThreadDropdown()">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                                        <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </button>
+                            </div>
+                            <div class="thread-dropdown-menu" id="thread-dropdown-menu">
+                                <div class="dropdown-item active" onclick="switchThread('market-strategy')" data-thread="market-strategy">
+                                    <div class="thread-icon">📊</div>
+                                    <div class="thread-info">
+                                        <div class="thread-name">Market Strategy</div>
+                                        <div class="thread-status">Active • 4 participants</div>
+                                    </div>
+                                </div>
+                                <div class="dropdown-item" onclick="switchThread('product-roadmap')" data-thread="product-roadmap">
+                                    <div class="thread-icon">🚀</div>
+                                    <div class="thread-info">
+                                        <div class="thread-name">Product Roadmap</div>
+                                        <div class="thread-status">3 participants</div>
+                                    </div>
+                                </div>
+                                <div class="dropdown-item" onclick="switchThread('technical-architecture')" data-thread="technical-architecture">
+                                    <div class="thread-icon">⚙️</div>
+                                    <div class="thread-info">
+                                        <div class="thread-name">Tech Architecture</div>
+                                        <div class="thread-status">2 participants</div>
+                                    </div>
+                                </div>
+                                <div class="dropdown-item" onclick="switchThread('sales-strategy')" data-thread="sales-strategy">
+                                    <div class="thread-icon">💰</div>
+                                    <div class="thread-info">
+                                        <div class="thread-name">Sales Strategy</div>
+                                        <div class="thread-status">5 participants</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Generate Insight Button -->
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                            <div style="background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.3); border-radius: 8px; padding: 12px; flex: 1;">
+                                <div style="font-size: 0.75rem; color: #22c55e; font-weight: 600; margin-bottom: 4px;">📊 Market Strategy Thread</div>
+                                <div style="font-size: 0.75rem; color: #ccc;">Discussing AI startup market positioning and go-to-market strategy</div>
+                            </div>
+                            <button onclick="generateInsight()" style="background: linear-gradient(135deg, #8b5cf6, #3b82f6); border: none; color: white; padding: 8px 16px; border-radius: 6px; font-size: 0.75rem; font-weight: 600; margin-left: 12px; cursor: pointer; transition: all 0.3s ease;">💡 Generate Insight</button>
+                        </div>
+
+                        <!-- User Messages with AI Boosts -->
+                        <div class="message">
+                            <div class="message-avatar avatar-person">S</div>
+                            <div class="message-content">
+                                <div class="message-text">
+                                    <strong>Sarah Chen</strong> (Product Lead)<br>
+                                    I think we should focus on healthcare AI first. The market is huge and there's clear ROI for hospitals.
+                                </div>
+                                </div>
+                            </div>
+
+                        <!-- Sarah's AI Boost - GPT-4 -->
+                        <div class="message">
+                            <div class="message-avatar avatar-gpt">GPT</div>
+                            <div class="message-content">
+                                <div class="message-text">
+                                    <strong>GPT-4</strong> (Sarah's AI Assistant)<br>
+                                    <div style="background: rgba(16, 163, 127, 0.1); border: 1px solid rgba(16, 163, 127, 0.3); border-radius: 6px; padding: 8px; margin: 8px 0;">
+                                        <div style="font-size: 0.75rem; color: #10a37f; font-weight: 600; margin-bottom: 4px;">📊 Market Research Boost</div>
+                                        <div style="font-size: 0.75rem; color: #ccc;">Analyzing healthcare AI market data...</div>
+                                    </div>
+                                    
+                                    Healthcare AI market is projected to reach $148B by 2029 (23% YoY growth). Key advantages: high barriers to entry, strong defensibility, clear ROI for hospitals. Consider starting with diagnostic imaging for clearer regulatory path.
+                                </div>
+                                </div>
+                            </div>
+
+                        <div class="message">
+                            <div class="message-avatar avatar-person">M</div>
+                            <div class="message-content">
+                                <div class="message-text">
+                                    <strong>Mike Rodriguez</strong> (CTO)<br>
+                                    Agreed, but we need to consider the regulatory hurdles. Healthcare compliance is a nightmare.
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Mike's AI Boost - Claude -->
+                        <div class="message">
+                            <div class="message-avatar avatar-claude">CLD</div>
+                            <div class="message-content">
+                                <div class="message-text">
+                                    <strong>Claude-3.5 Sonnet</strong> (Mike's Compliance Advisor)<br>
+                                    <div style="background: rgba(255, 102, 0, 0.1); border: 1px solid rgba(255, 102, 0, 0.3); border-radius: 6px; padding: 8px; margin: 8px 0;">
+                                        <div style="font-size: 0.75rem; color: #ff6600; font-weight: 600; margin-bottom: 4px;">🔒 Compliance Analysis Boost</div>
+                                        <div style="font-size: 0.75rem; color: #ccc;">Analyzing regulatory requirements...</div>
+                        </div>
+
+                                    Key regulatory requirements: FDA approval (12-18 months, $500K-2M), HIPAA compliance (3-6 months, $50K-200K), SOC 2 Type II (6-12 months, $100K-500K). FDA approval is the bottleneck - consider starting with non-regulated applications first.
+                                </div>
+                            </div>
+                        </div>
+                                    
+
+
+                        <div class="message">
+                            <div class="message-avatar avatar-person">E</div>
+                            <div class="message-content">
+                                <div class="message-text">
+                                    <strong>Emma Thompson</strong> (Sales)<br>
+                                    What about fintech? Lower barriers to entry and faster sales cycles. Plus, I have some contacts.
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Emma's AI Boost - Gemini -->
+                        <div class="message">
+                            <div class="message-avatar avatar-gemini">GEM</div>
+                            <div class="message-content">
+                                <div class="message-text">
+                                    <strong>Gemini Pro</strong> (Emma's Sales Intelligence)<br>
+                                    <div style="background: rgba(66, 133, 244, 0.1); border: 1px solid rgba(66, 133, 244, 0.3); border-radius: 6px; padding: 8px; margin: 8px 0;">
+                                        <div style="font-size: 0.75rem; color: #4285f4; font-weight: 600; margin-bottom: 4px;">💰 Sales Intelligence Boost</div>
+                                        <div style="font-size: 0.75rem; color: #ccc;">Analyzing fintech market opportunities...</div>
+                            </div>
+                                    
+                                    Fintech AI market is $1.2T globally with 3-6 month sales cycles vs 18-24 months for healthcare. Key advantages: faster sales cycles, lower regulatory barriers, higher customer LTV. Start with fraud detection AI and leverage your contacts for early validation.
+                        </div>
+                    </div>
+                </div>
+                                    
+                                    <div style="background: rgba(66, 133, 244, 0.05); border-radius: 8px; padding: 12px; margin: 8px 0;">
+                                        <div style="font-weight: 600; color: #4285f4; margin-bottom: 8px;">📈 Sales Opportunity Analysis</div>
+                                        
+                                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+                                            <div style="background: rgba(255,255,255,0.05); padding: 8px; border-radius: 6px;">
+                                                <div style="font-size: 0.75rem; color: #4285f4; font-weight: 600;">Market Size</div>
+                                                <div style="font-size: 0.875rem; color: #fff;">$12B → $61B (2029)</div>
+                                                <div style="font-size: 0.625rem; color: #999;">5x growth potential</div>
+                                            </div>
+                                            <div style="background: rgba(255,255,255,0.05); padding: 8px; border-radius: 6px;">
+                                                <div style="font-size: 0.75rem; color: #4285f4; font-weight: 600;">Sales Cycle</div>
+                                                <div style="font-size: 0.875rem; color: #fff;">6-12 months</div>
+                                                <div style="font-size: 0.625rem; color: #999;">vs 18-24m healthcare</div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div style="margin-bottom: 12px;">
+                                            <div style="font-weight: 600; color: #fff; margin-bottom: 6px;">🎯 Target Segments:</div>
+                                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                                                <div style="background: rgba(255,255,255,0.05); padding: 6px; border-radius: 4px;">
+                                                    <div style="font-size: 0.625rem; color: #4285f4;">Neobanks</div>
+                                                    <div style="font-size: 0.5rem; color: #999;">High growth</div>
+                                                </div>
+                                                <div style="background: rgba(255,255,255,0.05); padding: 6px; border-radius: 4px;">
+                                                    <div style="font-size: 0.625rem; color: #4285f4;">Payment Processors</div>
+                                                    <div style="font-size: 0.5rem; color: #999;">Established</div>
+                                                </div>
+                                                <div style="background: rgba(255,255,255,0.05); padding: 6px; border-radius: 4px;">
+                                                    <div style="font-size: 0.625rem; color: #4285f4;">Insurance Tech</div>
+                                                    <div style="font-size: 0.5rem; color: #999;">Emerging</div>
+                                                </div>
+                                                <div style="background: rgba(255,255,255,0.05); padding: 6px; border-radius: 4px;">
+                                                    <div style="font-size: 0.625rem; color: #4285f4;">Trading Platforms</div>
+                                                    <div style="font-size: 0.5rem; color: #999;">High value</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div style="background: rgba(66, 133, 244, 0.2); border-radius: 6px; padding: 8px;">
+                                            <div style="font-size: 0.75rem; color: #4285f4; font-weight: 600;">💡 Sales Strategy:</div>
+                                            <div style="font-size: 0.75rem; color: #fff;">Leverage Emma's contacts for early adopters. Focus on fraud detection and risk management use cases first.</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+  </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features-section">
+        <div class="container">
+            <div class="features-header fade-in">
+                <h2 class="section-title">Why Teams Choose Tredy</h2>
+                <p class="section-subtitle">The only AI platform that transforms conversations into actionable intelligence</p>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card fade-in delay-1">
+                    <div class="feature-icon">🧠</div>
+                    <h3>Intelligent Threading</h3>
+                    <p>Automatically organize complex discussions into focused, searchable threads that preserve context and insights.</p>
+                </div>
+
+                <div class="feature-card fade-in delay-2">
+                    <div class="feature-icon">⚡</div>
+                    <h3>AI-Powered Boost</h3>
+                    <p>Invite specialized AI experts to analyze your threads and provide deeper insights from multiple perspectives.</p>
+                </div>
+
+                <div class="feature-card fade-in delay-3">
+                    <div class="feature-icon">👥</div>
+                    <h3>Team Collaboration</h3>
+                    <p>Share threads with your team, invite human collaborators, and build collective intelligence together.</p>
+                </div>
+
+                <div class="feature-card fade-in delay-1">
+                    <div class="feature-icon">🔍</div>
+                    <h3>Smart Search</h3>
+                    <p>Find any insight, decision, or conversation instantly across all your threads and AI interactions.</p>
+                </div>
+
+                <div class="feature-card fade-in delay-2">
+                    <div class="feature-icon">📊</div>
+                    <h3>Analytics & Insights</h3>
+                    <p>Track your team's AI usage, identify patterns, and optimize your decision-making processes.</p>
+                </div>
+
+                <div class="feature-card fade-in delay-3">
+                    <div class="feature-icon">🔒</div>
+                    <h3>Enterprise Security</h3>
+                    <p>SOC 2 compliant with end-to-end encryption, SSO, and granular access controls for enterprise teams.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Partners & Integrations Section -->
+    <section class="partners-section">
+        <div class="container">
+            <div class="partners-header fade-in">
+                <h2 class="section-title">AI Partners & Integrations</h2>
+                <p class="section-subtitle">Connect with the world's leading AI models and tools for unlimited possibilities</p>
+            </div>
+
+            <!-- Logo Carousel -->
+            <div class="logo-carousel-container fade-in delay-1">
+                <div class="carousel-track">
+                    <div class="carousel-slide">
+                        <div class="logo-item">
+                            <div class="logo-icon openai-logo">O</div>
+                            <span>OpenAI</span>
+                        </div>
+                        <div class="logo-item">
+                            <div class="logo-icon anthropic-logo">A</div>
+                            <span>Anthropic</span>
+                        </div>
+                        <div class="logo-item">
+                            <div class="logo-icon google-logo">G</div>
+                            <span>Google</span>
+                        </div>
+                        <div class="logo-item">
+                            <div class="logo-icon midjourney-logo">M</div>
+                            <span>Midjourney</span>
+                        </div>
+                        <div class="logo-item">
+                            <div class="logo-icon sora-logo">S</div>
+                            <span>SORA</span>
+                        </div>
+                        <div class="logo-item">
+                            <div class="logo-icon udio-logo">U</div>
+                            <span>Udio</span>
+                        </div>
+                        <div class="logo-item">
+                            <div class="logo-icon perplexity-logo">P</div>
+                            <span>Perplexity</span>
+                        </div>
+                        <div class="logo-item">
+                            <div class="logo-icon characterai-logo">C</div>
+                            <span>Character.AI</span>
+                        </div>
+                        <div class="logo-item">
+                            <div class="logo-icon stablediffusion-logo">SD</div>
+                            <span>Stable Diffusion</span>
+                        </div>
+                        <div class="logo-item">
+                            <div class="logo-icon cohere-logo">C</div>
+                            <span>Cohere</span>
+                        </div>
+                        <div class="logo-item">
+                            <div class="logo-icon piai-logo">π</div>
+                            <span>Pi AI</span>
+                        </div>
+                        <div class="logo-item">
+                            <div class="logo-icon notionai-logo">N</div>
+                            <span>Notion AI</span>
+                        </div>
+                    </div>
+                    <!-- Duplicate for seamless loop -->
+                    <div class="carousel-slide">
+                        <div class="logo-item">
+                            <div class="logo-icon openai-logo">O</div>
+                            <span>OpenAI</span>
+                        </div>
+                        <div class="logo-item">
+                            <div class="logo-icon anthropic-logo">A</div>
+                            <span>Anthropic</span>
+                        </div>
+                        <div class="logo-item">
+                            <div class="logo-icon google-logo">G</div>
+                            <span>Google</span>
+                        </div>
+                        <div class="logo-item">
+                            <div class="logo-icon midjourney-logo">M</div>
+                            <span>Midjourney</span>
+                        </div>
+                        <div class="logo-item">
+                            <div class="logo-icon sora-logo">S</div>
+                            <span>SORA</span>
+                        </div>
+                        <div class="logo-item">
+                            <div class="logo-icon udio-logo">U</div>
+                            <span>Udio</span>
+                        </div>
+                        <div class="logo-item">
+                            <div class="logo-icon perplexity-logo">P</div>
+                            <span>Perplexity</span>
+                        </div>
+                        <div class="logo-item">
+                            <div class="logo-icon characterai-logo">C</div>
+                            <span>Character.AI</span>
+                        </div>
+                        <div class="logo-item">
+                            <div class="logo-icon stablediffusion-logo">SD</div>
+                            <span>Stable Diffusion</span>
+                        </div>
+                        <div class="logo-item">
+                            <div class="logo-icon cohere-logo">C</div>
+                            <span>Cohere</span>
+                        </div>
+                        <div class="logo-item">
+                            <div class="logo-icon piai-logo">π</div>
+                            <span>Pi AI</span>
+                        </div>
+                        <div class="logo-item">
+                            <div class="logo-icon notionai-logo">N</div>
+                            <span>Notion AI</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+     
+
+            <!-- Integration Features -->
+            <div class="integration-features fade-in delay-4">
+                <div class="feature-grid">
+                    <div class="integration-feature">
+                        <div class="feature-icon">🔌</div>
+                        <h4>One-Click Integration</h4>
+                        <p>Connect any AI model instantly with our unified API</p>
+                    </div>
+                    <div class="integration-feature">
+                        <div class="feature-icon">🔄</div>
+                        <h4>Real-Time Sync</h4>
+                        <p>All AI responses sync across your team in real-time</p>
+                    </div>
+                    <div class="integration-feature">
+                        <div class="feature-icon">🎯</div>
+                        <h4>Smart Routing</h4>
+                        <p>Automatically route tasks to the best AI for the job</p>
+                    </div>
+                    <div class="integration-feature">
+                        <div class="feature-icon">📊</div>
+                        <h4>Usage Analytics</h4>
+                        <p>Track performance and costs across all AI models</p>
+                    </div>
+                </div>
+            </div>
+
+   
+        </div>
+    </section>
+
+    <!-- Use Cases Section -->
+    <section class="use-cases-section">
+        <div class="container">
+            <div class="use-cases-header fade-in">
+                <h2 class="section-title">Built for Every Team</h2>
+                <p class="section-subtitle">From startups to Fortune 500s, teams use Tredy to make better decisions faster</p>
+            </div>
+
+            <div class="use-cases-grid">
+                <div class="use-case-card fade-in delay-1">
+                    <div class="use-case-icon">🚀</div>
+                    <h3>Product Teams</h3>
+                    <p>Organize user research, feature discussions, and roadmap planning into actionable threads.</p>
+                    <ul>
+                        <li>User research synthesis</li>
+                        <li>Feature prioritization</li>
+                        <li>Competitive analysis</li>
+                    </ul>
+                </div>
+
+                <div class="use-case-card fade-in delay-2">
+                    <div class="use-case-icon">💼</div>
+                    <h3>Business Teams</h3>
+                    <p>Streamline strategy discussions, market analysis, and decision-making processes.</p>
+                    <ul>
+                        <li>Strategic planning</li>
+                        <li>Market research</li>
+                        <li>Go-to-market strategy</li>
+                    </ul>
+                </div>
+
+                <div class="use-case-card fade-in delay-3">
+                    <div class="use-case-icon">🔬</div>
+                    <h3>Research Teams</h3>
+                    <p>Organize complex research findings, literature reviews, and experimental data.</p>
+                    <ul>
+                        <li>Literature reviews</li>
+                        <li>Data analysis</li>
+                        <li>Research synthesis</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="testimonials-section">
+        <div class="container">
+            <div class="testimonials-header fade-in">
+                <h2 class="section-title">Loved by Teams Worldwide</h2>
+                <p class="section-subtitle">See how teams are transforming their AI workflows</p>
+            </div>
+
+            <div class="testimonials-grid">
+                <div class="testimonial-card fade-in delay-1">
+                    <div class="testimonial-content">
+                        <p>"Tredy has revolutionized how our product team collaborates with AI. We can now track every decision and insight across our entire product development process."</p>
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">S</div>
+                        <div class="author-info">
+                            <div class="author-name">Sarah Chen</div>
+                            <div class="author-title">Head of Product, TechFlow</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-card fade-in delay-2">
+                    <div class="testimonial-content">
+                        <p>"The threading feature alone has saved us hours every week. Instead of losing context in long AI conversations, we now have organized, searchable insights."</p>
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">M</div>
+                        <div class="author-info">
+                            <div class="author-name">Marcus Rodriguez</div>
+                            <div class="author-title">CTO, InnovateCorp</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-card fade-in delay-3">
+                    <div class="testimonial-content">
+                        <p>"The AI collaboration features are game-changing. We can now have multiple AI experts analyze the same problem from different angles simultaneously."</p>
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">E</div>
+                        <div class="author-info">
+                            <div class="author-name">Emma Thompson</div>
+                            <div class="author-title">Research Director, DataLab</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <div class="logo-mark">T</div>
+                        <span class="logo-text">Tredy</span>
+                    </div>
+                    <p>The AI Thinking OS for modern teams</p>
+                    <div class="social-links">
+                        <a href="#" class="social-link">Twitter</a>
+                        <a href="#" class="social-link">LinkedIn</a>
+                        <a href="#" class="social-link">GitHub</a>
+                    </div>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Product</h4>
+                    <ul>
+                        <li><a href="#">Features</a></li>
+                        <li><a href="#">Pricing</a></li>
+                        <li><a href="#">API</a></li>
+                        <li><a href="#">Integrations</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="#">Documentation</a></li>
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#">Community</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="#">About</a></li>
+                        <li><a href="#">Careers</a></li>
+                        <li><a href="#">Contact</a></li>
+                        <li><a href="#">Press</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="#">Privacy</a></li>
+                        <li><a href="#">Terms</a></li>
+                        <li><a href="#">Security</a></li>
+                        <li><a href="#">Compliance</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2024 Tredy. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Highlight Tooltip -->
+    <div class="highlight-tooltip" id="highlight-tooltip">
+        <button class="tooltip-button" onclick="createThread()">
+            🧵 Create Thread
+        </button>
+    </div>
+
+    <script>
+        let selectedText = '';
+        let selectedElement = null;
+        let currentThread = null;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Setup highlighting functionality
+            document.addEventListener('mouseup', function(e) {
+                const target = e.target.closest('.highlightable');
+                if (target) {
+                    // Remove previous selections
+                    document.querySelectorAll('.highlightable.selected').forEach(el => {
+                        el.classList.remove('selected');
+                    });
+
+                    // Select current element
+                    target.classList.add('selected');
+                    selectedElement = target;
+                    selectedText = target.getAttribute('data-text');
+
+                    // Show tooltip
+                    const rect = target.getBoundingClientRect();
+                    const tooltip = document.getElementById('highlight-tooltip');
+                    tooltip.style.left = (rect.left + rect.width/2 - 50) + 'px';
+                    tooltip.style.top = (rect.bottom + window.scrollY + 10) + 'px';
+                    tooltip.classList.add('show');
+                }
+            });
+
+            // Hide tooltip when clicking elsewhere
+            document.addEventListener('mousedown', function(e) {
+                if (!e.target.closest('.highlightable') && !e.target.closest('.highlight-tooltip')) {
+                    document.getElementById('highlight-tooltip').classList.remove('show');
+                    document.querySelectorAll('.highlightable.selected').forEach(el => {
+                        el.classList.remove('selected');
+                    });
+                }
+            });
+
+            // Smooth scrolling
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+
+            // Intersection Observer for animations
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.animationPlayState = 'running';
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.fade-in').forEach(el => {
+                el.style.animationPlayState = 'paused';
+                observer.observe(el);
+            });
+        });
+
+        function createThread() {
+            if (!selectedElement || !selectedText) return;
+
+            const threadType = selectedElement.getAttribute('data-thread');
+            const threadPanel = document.getElementById('thread-panel');
+            const threadContent = document.getElementById('thread-content');
+
+            // Hide tooltip
+            document.getElementById('highlight-tooltip').classList.remove('show');
+
+            // Add success highlight to selected text
+            selectedElement.classList.add('success-highlight');
+            
+            // Update thread panel
+            threadPanel.classList.add('thread-created');
+            
+            // Create thread content based on type
+            let threadTitle, threadDescription;
+            
+            switch(threadType) {
+                case 'tech':
+                    threadTitle = '🔧 Technical Architecture';
+                    threadDescription = 'Deep dive into AI startup technical decisions';
+                    break;
+                case 'market':
+                    threadTitle = '📊 Market Strategy';
+                    threadDescription = 'Market analysis and competitive positioning';
+                    break;
+                case 'funding':
+                    threadTitle = '💰 Funding Strategy';
+                    threadDescription = 'Investment approach and fundraising plan';
+                    break;
+                default:
+                    threadTitle = '🧵 New Thread';
+                    threadDescription = 'Focused discussion thread';
+            }
+
+            currentThread = threadType;
+
+            threadContent.innerHTML = `
+                <div class="thread-workspace">
+                    <div class="workspace-header">
+                        <div class="workspace-title">${threadTitle}</div>
+                        <button class="boost-button" onclick="boostThread('${threadType}')">⚡ Boost</button>
+                    </div>
+                    <div style="font-size: 0.75rem; color: #999; margin-bottom: 12px;">${threadDescription}</div>
+                    <div style="background: rgba(59, 130, 246, 0.1); border-left: 3px solid #3b82f6; border-radius: 4px; padding: 12px; margin-bottom: 16px;">
+                        <div style="font-size: 0.875rem; color: #3b82f6; font-weight: 600; margin-bottom: 4px;">Selected Context:</div>
+                        <div style="font-size: 0.875rem; color: #ccc; line-height: 1.4;">"${selectedText.substring(0, 100)}${selectedText.length > 100 ? '...' : ''}"</div>
+                    </div>
+                </div>
+
+                <div class="message">
+                    <div class="message-avatar avatar-user">U</div>
+                    <div class="message-content">
+                        <div class="message-text">Let's focus specifically on this aspect. Can you dive deeper?</div>
+                    </div>
+                </div>
+
+                <div class="typing-indicator">
+                    <div class="message-avatar avatar-ai">AI</div>
+                    <span style="font-size: 0.875rem; color: #999;">Analyzing context...</span>
+                    <div class="typing-dots">
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                    </div>
+                </div>
+            `;
+
+            // Show thread collapse in main chat
+            const threadCollapse = document.getElementById('thread-collapse');
+            const threadTitleElement = document.getElementById('thread-title');
+            threadTitleElement.textContent = threadTitle;
+            threadCollapse.style.display = 'block';
+
+            // Simulate AI response after delay
+            setTimeout(() => {
+                showThreadResponse(threadType);
+            }, 2000);
+        }
+
+        function showThreadResponse(threadType) {
+            const threadContent = document.getElementById('thread-content');
+            
+            let aiResponse;
+            switch(threadType) {
+                case 'tech':
+                    aiResponse = `
+                        <div class="message">
+                            <div class="message-avatar avatar-ai">AI</div>
+                            <div class="message-content">
+                                <div class="ai-response">
+                                    <strong>Technical Architecture Deep Dive:</strong><br><br>
+                                    For an AI startup, your core decision is <strong>Build vs Buy</strong>:<br><br>
+                                    <strong>Option 1: API-First Approach</strong><br>
+                                    • Use OpenAI/Anthropic APIs ($0.01-0.06/1K tokens)<br>
+                                    • Focus on application layer and user experience<br>
+                                    • Faster to market, lower initial costs<br><br>
+                                    <strong>Option 2: Custom Models</strong><br>
+                                    • Requires $2-5M+ in compute and talent<br>
+                                    • Better control and potential differentiation<br>
+                                    • Consider only if you have unique data advantages<br><br>
+                                    <strong>Recommendation:</strong> Start with APIs, then evaluate custom models based on traction and specific needs.
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    break;
+                case 'market':
+                    aiResponse = `
+                        <div class="message">
+                            <div class="message-avatar avatar-ai">AI</div>
+                            <div class="message-content">
+                                <div class="ai-response">
+                                    <strong>Market Strategy Analysis:</strong><br><br>
+                                    <strong>Target Market Sizing:</strong><br>
+                                    • Total AI Market: $184B (2024) → $826B (2030)<br>
+                                    • Your Addressable Market depends on vertical focus<br><br>
+                                    <strong>Vertical Opportunities:</strong><br>
+                                    🏥 Healthcare AI: $45B → $148B (2029)<br>
+                                    💰 Fintech AI: $12B → $61B (2029)<br>
+                                    👨‍💻 Developer Tools: $8B → $31B (2029)<br><br>
+                                    <strong>Go-to-Market Strategy:</strong><br>
+                                    1. Choose ONE vertical to start<br>
+                                    2. Identify specific use case with clear ROI<br>
+                                    3. Build for 10x improvement, not 10% better<br>
+                                    4. Focus on product-led growth initially
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    break;
+                case 'funding':
+                    aiResponse = `
+                        <div class="message">
+                            <div class="message-avatar avatar-ai">AI</div>
+                            <div class="message-content">
+                                <div class="ai-response">
+                                    <strong>Funding Strategy Roadmap:</strong><br><br>
+                                    <strong>Pre-Seed ($250K-500K):</strong><br>
+                                    • Build MVP and validate core hypothesis<br>
+                                    • Friends, family, and angel investors<br>
+                                    • Focus: Product-market fit signals<br><br>
+                                    <strong>Seed Round ($2-5M):</strong><br>
+                                    • Prove initial traction (revenue or usage)<br>
+                                    • Target: AI-focused VCs (a16z, Sequoia, etc.)<br>
+                                    • Metrics VCs want: User engagement, retention, NPS<br><br>
+                                    <strong>Series A ($8-15M):</strong><br>
+                                    • Scale proven business model<br>
+                                    • $1M+ ARR or strong growth trajectory<br>
+                                    • Focus: Unit economics and scalability<br><br>
+                                    <strong>Key Success Factors:</strong><br>
+                                    • Strong technical team (ML/AI experience)<br>
+                                    • Defensible dataset or unique approach<br>
+                                    • Clear path to $100M+ market opportunity
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    break;
+            }
+
+            // Replace typing indicator with response
+            const typingIndicator = threadContent.querySelector('.typing-indicator');
+            if (typingIndicator) {
+                typingIndicator.outerHTML = aiResponse;
+            }
+        }
+
+        function boostThread(threadType) {
+            // Show active collaborators
+            document.getElementById('active-collaborators').style.display = 'block';
+            document.getElementById('live-activity').style.display = 'block';
+
+            // Add current AI experts to the thread
+            const collaboratorList = document.getElementById('collaborator-list');
+            collaboratorList.innerHTML = `
+                <div class="collaborator-item" style="border-color: #22c55e;">
+                    <div class="collaborator-avatar avatar-gpt">GPT</div>
+                    <div class="collaborator-info">
+                        <div class="collaborator-name">GPT-4</div>
+                        <div class="collaborator-role" style="color: #22c55e;">Analyzing...</div>
+                    </div>
+                </div>
+                <div class="collaborator-item" style="border-color: #22c55e;">
+                    <div class="collaborator-avatar avatar-claude">CLD</div>
+                    <div class="collaborator-info">
+                        <div class="collaborator-name">Claude-3.5</div>
+                        <div class="collaborator-role" style="color: #22c55e;">Contributing...</div>
+                    </div>
+                </div>
+            `;
+
+            // Update activity description
+            const activityDesc = document.getElementById('activity-description');
+            const activities = [
+                'GPT-4 is analyzing technical feasibility...',
+                'Claude is reviewing market positioning...',
+                'Cross-referencing industry benchmarks...',
+                'Generating actionable recommendations...'
+            ];
+
+            let activityIndex = 0;
+            const activityInterval = setInterval(() => {
+                if (activityIndex < activities.length) {
+                    activityDesc.textContent = activities[activityIndex];
+                    activityIndex++;
+                } else {
+                    activityDesc.textContent = 'Collaboration complete! New insights available.';
+                    clearInterval(activityInterval);
+                }
+            }, 2000);
+        }
+
+        function addCollaborator(type) {
+            // This would trigger the boost functionality
+            if (currentThread) {
+                boostThread(currentThread);
+            }
+        }
+
+        function showInviteOptions() {
+            alert('💡 In the full version:\n\n• Invite human collaborators via email\n• Add specialized AI models for your domain\n• Create custom AI personas\n• Set up automated workflows\n\nTry creating a thread first to see collaboration in action!');
+        }
+
+        function addBoost(type) {
+            const chatContainer = document.getElementById('collaboration-chat');
+            const boostMessages = {
+                video: {
+                    avatar: 'GPT',
+                    name: 'GPT-4',
+                    role: 'Video Analyst',
+                    content: '🎥 Analyzing uploaded video...\n\nI can see the product demo shows strong user engagement patterns. The interface flow looks intuitive, but I notice some potential UX improvements in the onboarding sequence.',
+                    boostType: 'Video Analysis',
+                    boostDesc: 'Processing: Product demo video (2:34)'
+                },
+                audio: {
+                    avatar: 'CLD',
+                    name: 'Claude-3.5',
+                    role: 'Audio Specialist',
+                    content: '🎵 Transcribing and analyzing audio...\n\nFrom the customer interview, I can identify 3 key pain points:\n1. Integration complexity\n2. Training time requirements\n3. ROI measurement challenges\n\nThis aligns with our market research findings.',
+                    boostType: 'Audio Analysis',
+                    boostDesc: 'Processing: Customer interview (15:22)'
+                },
+                excel: {
+                    avatar: 'GEM',
+                    name: 'Gemini Pro',
+                    role: 'Data Analyst',
+                    content: '📊 Analyzing Excel data...\n\nKey insights from your sales data:\n• Q4 growth: 47% YoY\n• Customer acquisition cost: $2,300\n• Churn rate: 8.2% (industry avg: 12%)\n• Top performing segment: Healthcare (34% of revenue)\n\nRecommendation: Double down on healthcare vertical.',
+                    boostType: 'Data Analysis',
+                    boostDesc: 'Processing: Sales data Q4 2024'
+                },
+                ppt: {
+                    avatar: 'GPT',
+                    name: 'GPT-4',
+                    role: 'Presentation Reviewer',
+                    content: '📄 Reviewing PowerPoint presentation...\n\nYour pitch deck is strong, but I suggest:\n• Add more specific market size data\n• Include competitive analysis slide\n• Strengthen the technical differentiation\n• Add customer testimonials\n\nOverall score: 8.5/10',
+                    boostType: 'PPT Review',
+                    boostDesc: 'Processing: Investor pitch deck'
+                },
+                website: {
+                    avatar: 'CLD',
+                    name: 'Claude-3.5',
+                    role: 'UX Analyst',
+                    content: '🌐 Website audit complete...\n\nFindings:\n• Load time: 2.3s (target: <2s)\n• Mobile responsiveness: 92/100\n• SEO score: 78/100\n• Conversion rate: 2.1% (industry avg: 2.5%)\n\nPriority fixes: Optimize images, improve CTAs',
+                    boostType: 'Website Audit',
+                    boostDesc: 'Analyzing: Company homepage'
+                },
+                code: {
+                    avatar: 'GEM',
+                    name: 'Gemini Pro',
+                    role: 'Code Reviewer',
+                    content: '💻 Code review in progress...\n\nArchitecture looks solid, but I found:\n• 3 potential security vulnerabilities\n• 15% code duplication\n• Missing error handling in 4 modules\n• Performance bottleneck in data processing\n\nRecommendation: Refactor before scaling.',
+                    boostType: 'Code Review',
+                    boostDesc: 'Analyzing: Backend API code'
+                },
+                text: {
+                    avatar: 'GPT',
+                    name: 'GPT-4',
+                    role: 'Content Analyst',
+                    content: '📝 Text analysis complete...\n\nSentiment: Positive (78%)\nKey themes: Innovation, efficiency, growth\nTone: Professional but approachable\nReadability: Grade 8 level\n\nSuggestions: Add more specific metrics, include customer stories',
+                    boostType: 'Text Analysis',
+                    boostDesc: 'Processing: Marketing copy'
+                },
+                research: {
+                    avatar: 'CLD',
+                    name: 'Claude-3.5',
+                    role: 'Research Specialist',
+                    content: '🔬 Research paper analysis...\n\nKey findings from 12 papers:\n• AI adoption in healthcare: 23% YoY growth\n• Regulatory landscape: Becoming more favorable\n• Investment trends: $45B in 2024\n• Technical challenges: Data privacy, integration\n\nThis validates our market strategy.',
+                    boostType: 'Research Analysis',
+                    boostDesc: 'Analyzing: 12 research papers'
+                }
+            };
+
+            const message = boostMessages[type];
+            const newMessage = document.createElement('div');
+            newMessage.className = 'message';
+            newMessage.innerHTML = `
+                <div class="message-avatar avatar-${message.avatar.toLowerCase()}">${message.avatar}</div>
+                <div class="message-content">
+                    <div class="message-text">
+                        <strong>${message.name}</strong> (${message.role})<br>
+                        <div style="background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.3); border-radius: 6px; padding: 8px; margin: 8px 0;">
+                            <div style="font-size: 0.75rem; color: #22c55e; font-weight: 600; margin-bottom: 4px;">${message.boostType}</div>
+                            <div style="font-size: 0.75rem; color: #ccc;">${message.boostDesc}</div>
+                        </div>
+                        ${message.content}
+                    </div>
+                </div>
+            `;
+
+            // Add typing indicator first
+            const typingIndicator = document.createElement('div');
+            typingIndicator.className = 'typing-indicator';
+            typingIndicator.innerHTML = `
+                <div class="message-avatar avatar-${message.avatar.toLowerCase()}">${message.avatar}</div>
+                <span style="font-size: 0.875rem; color: #999;">Analyzing ${type}...</span>
+                <div class="typing-dots">
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                </div>
+            `;
+
+            chatContainer.appendChild(typingIndicator);
+
+            // Replace typing indicator with response after delay
+            setTimeout(() => {
+                chatContainer.removeChild(typingIndicator);
+                chatContainer.appendChild(newMessage);
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            }, 2000);
+        }
+
+        function expandThread() {
+            // This would expand the thread in the main chat
+            alert('💡 In the full version, this would expand the thread inline in the main chat conversation.');
+        }
+
+        function generateInsight(model) {
+            const insights = {
+                gpt: {
+                    title: '🤖 GPT-4 Strategic Insight',
+                    content: `**Market Strategy Analysis Summary:**
+
+Based on the discussion about AI startup market positioning, here are the key strategic insights:
+
+**🎯 Recommended Approach:**
+• **Healthcare AI Focus**: 3x higher growth potential, but 2x longer sales cycles
+• **Hybrid Strategy**: Start with healthcare for credibility, expand to fintech for growth
+• **Regulatory Path**: Diagnostic imaging has clearer compliance requirements
+
+**📊 Market Validation:**
+• Total AI Market: $184B → $826B (2030)
+• Healthcare AI: $45B → $148B (2029)
+• Fintech AI: $12B → $61B (2029)
+
+**🚀 Go-to-Market Strategy:**
+1. **Phase 1**: Healthcare diagnostic tools (12-18 months)
+2. **Phase 2**: Expand to fintech automation (18-24 months)
+3. **Phase 3**: Horizontal platform expansion (24+ months)
+
+**💰 Funding Implications:**
+• Target $3-5M seed round
+• Focus on healthcare domain expertise
+• Build regulatory compliance early
+• Prepare for longer sales cycles
+
+This strategy balances growth potential with manageable complexity.`
+                },
+                claude: {
+                    title: '🧠 Claude-3.5 Analytical Insight',
+                    content: `**Technical & Market Analysis:**
+
+**🔍 Deep Dive Analysis:**
+
+**Technical Architecture Considerations:**
+• **Healthcare AI**: Requires HIPAA compliance, FDA approval pathways
+• **Fintech AI**: PCI DSS compliance, real-time processing needs
+• **Infrastructure**: Cloud-native approach with edge computing for healthcare
+
+**Market Entry Strategy:**
+• **Regulatory Complexity**: Healthcare (High) vs Fintech (Medium)
+• **Sales Cycle**: Healthcare (18-24 months) vs Fintech (6-12 months)
+• **Customer Acquisition Cost**: Healthcare ($15K) vs Fintech ($8K)
+
+**Risk Assessment:**
+• **Healthcare**: Higher barriers, but stronger defensibility
+• **Fintech**: Faster time-to-market, but more competition
+• **Hybrid**: Balances risk while building expertise
+
+**Technical Recommendations:**
+1. **Start with diagnostic imaging** (clearer regulatory path)
+2. **Build modular architecture** for easy expansion
+3. **Invest in compliance infrastructure** early
+4. **Partner with healthcare systems** for validation
+
+**Competitive Analysis:**
+• Healthcare AI: Fewer competitors, higher barriers
+• Fintech AI: Crowded market, but larger TAM
+• Differentiation: Focus on specific use cases, not general AI`
+                },
+                gemini: {
+                    title: '💎 Gemini Pro Research Insight',
+                    content: `**Comprehensive Research Summary:**
+
+**📚 Literature Review Findings:**
+
+**Academic Research Insights:**
+• **AI Adoption Trends**: 23% YoY growth in healthcare AI
+• **Investment Patterns**: $45B invested in AI startups in 2024
+• **Regulatory Evolution**: FDA becoming more AI-friendly
+• **Technical Challenges**: Data privacy, integration complexity
+
+**Market Research Data:**
+• **Healthcare AI Market**: $45B → $148B (2029)
+• **Fintech AI Market**: $12B → $61B (2029)
+• **Developer Tools**: $8B → $31B (2029)
+
+**Competitive Landscape:**
+• **Healthcare**: Epic, Cerner, emerging AI startups
+• **Fintech**: Stripe, Plaid, traditional banks
+• **Gap Analysis**: Diagnostic imaging underserved
+
+**Technology Trends:**
+• **Edge Computing**: Critical for healthcare privacy
+• **Federated Learning**: Enables multi-institutional training
+• **Explainable AI**: Required for healthcare adoption
+• **Real-time Processing**: Essential for fintech applications
+
+**Recommendations:**
+1. **Focus on diagnostic imaging** (clearer regulatory path)
+2. **Build explainable AI** for healthcare trust
+3. **Develop real-time capabilities** for fintech
+4. **Invest in edge computing** for privacy compliance
+
+**Success Metrics:**
+• Healthcare: FDA approval, clinical validation
+• Fintech: Transaction volume, fraud detection accuracy
+• Platform: API adoption, developer ecosystem`
+                }
+            };
+
+            const insight = insights[model];
+            
+            // Create insight message
+            const insightMessage = document.createElement('div');
+            insightMessage.className = 'message';
+            insightMessage.innerHTML = `
+                <div class="message-avatar avatar-${model === 'gpt' ? 'gpt' : model === 'claude' ? 'claude' : 'gemini'}">${model === 'gpt' ? 'GPT' : model === 'claude' ? 'CLD' : 'GEM'}</div>
+                <div class="message-content">
+                    <div class="message-text">
+                        <strong>${insight.title}</strong><br>
+                        <div style="background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.3); border-radius: 6px; padding: 12px; margin: 8px 0;">
+                            <div style="font-size: 0.75rem; color: #22c55e; font-weight: 600; margin-bottom: 4px;">📊 Thread Summary Generated</div>
+                            <div style="font-size: 0.75rem; color: #ccc;">Analyzing all thread messages and context...</div>
+                        </div>
+                        <div style="white-space: pre-line; font-size: 0.875rem; line-height: 1.6; color: #ccc; margin-top: 8px;">${insight.content}</div>
+                    </div>
+                </div>
+            `;
+
+            // Add to thread content
+            const threadContent = document.getElementById('thread-content');
+            threadContent.appendChild(insightMessage);
+            threadContent.scrollTop = threadContent.scrollHeight;
+
+            // Update thread collapse info
+            const threadInfo = document.querySelector('#thread-collapse .message-avatar + div div:last-child');
+            threadInfo.textContent = '4 messages • 3 AI experts';
+        }
+
+        function summaryChatAbove() {
+            const chatContainer = document.getElementById('collaboration-chat');
+            
+            // Create comprehensive summary message
+            const summaryMessage = document.createElement('div');
+            summaryMessage.className = 'message';
+            summaryMessage.innerHTML = `
+                <div class="message-avatar avatar-gpt">GPT</div>
+                <div class="message-content">
+                    <div class="message-text">
+                        <strong>GPT-4</strong> (Thread Summarizer)<br>
+                        <div style="background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 6px; padding: 8px; margin: 8px 0;">
+                            <div style="font-size: 0.75rem; color: #8b5cf6; font-weight: 600; margin-bottom: 4px;">📋 Comprehensive Thread Summary</div>
+                            <div style="font-size: 0.75rem; color: #ccc;">Analyzing all messages and AI insights...</div>
+                        </div>
+                        
+                        <div style="background: rgba(139, 92, 246, 0.05); border-radius: 8px; padding: 12px; margin: 8px 0;">
+                            <div style="font-weight: 600; color: #8b5cf6; margin-bottom: 8px;">🎯 Key Discussion Points</div>
+                            
+                            <div style="margin-bottom: 12px;">
+                                <div style="font-weight: 600; color: #fff; margin-bottom: 6px;">🏥 Healthcare AI Strategy:</div>
+                                <div style="font-size: 0.75rem; color: #ccc; line-height: 1.4;">
+                                    • Market: $45B → $148B (2029) with 23% YoY growth<br>
+                                    • ROI: 300-500% for hospitals<br>
+                                    • Regulatory: HIPAA + FDA Class II/III + SOC 2 Type II<br>
+                                    • Sales Cycle: 18-24 months<br>
+                                    • Recommendation: Start with diagnostic imaging
+                                </div>
+                            </div>
+                            
+                            <div style="margin-bottom: 12px;">
+                                <div style="font-weight: 600; color: #fff; margin-bottom: 6px;">💰 Fintech AI Strategy:</div>
+                                <div style="font-size: 0.75rem; color: #ccc; line-height: 1.4;">
+                                    • Market: $12B → $61B (2029) with 5x growth potential<br>
+                                    • Sales Cycle: 6-12 months (faster than healthcare)<br>
+                                    • Target Segments: Neobanks, Payment Processors, Insurance Tech<br>
+                                    • Regulatory: PCI DSS (less complex than healthcare)<br>
+                                    • Recommendation: Focus on fraud detection and risk management
+                                </div>
+                            </div>
+                            
+                            <div style="margin-bottom: 12px;">
+                                <div style="font-weight: 600; color: #fff; margin-bottom: 6px;">🎨 Brand Positioning:</div>
+                                <div style="font-size: 0.75rem; color: #ccc; line-height: 1.4;">
+                                    • Healthcare: "Saving Lives with AI" (trust, credibility, purpose)<br>
+                                    • Fintech: "Revolutionizing Finance" (innovation, growth, disruption)<br>
+                                    • Unified: "AI that matters" - dual positioning strategy
+                                </div>
+                            </div>
+                            
+                            <div style="margin-bottom: 12px;">
+                                <div style="font-weight: 600; color: #fff; margin-bottom: 6px;">⚙️ Operational Considerations:</div>
+                                <div style="font-size: 0.75rem; color: #ccc; line-height: 1.4;">
+                                    • Healthcare: Specialized compliance teams, clinical validation<br>
+                                    • Fintech: 24/7 support, real-time processing, rapid iteration<br>
+                                    • Setup Costs: Healthcare ($2-5M) vs Fintech ($500K-1M)<br>
+                                    • Recommendation: Start lean with healthcare MVP, scale to fintech
+                                </div>
+                            </div>
+                            
+                            <div style="background: rgba(139, 92, 246, 0.2); border-radius: 6px; padding: 8px;">
+                                <div style="font-size: 0.75rem; color: #8b5cf6; font-weight: 600;">💡 Consensus Recommendation:</div>
+                                <div style="font-size: 0.75rem; color: #fff;">Hybrid approach: Start with healthcare for credibility and regulatory expertise, then expand to fintech for growth and faster scaling. Focus on diagnostic imaging initially, then build fintech capabilities.</div>
+                            </div>
+                        </div>
+                        
+                        <div style="background: rgba(139, 92, 246, 0.05); border-radius: 8px; padding: 12px; margin: 8px 0;">
+                            <div style="font-weight: 600; color: #8b5cf6; margin-bottom: 8px;">📊 Team Consensus Matrix</div>
+                            
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                                <div style="background: rgba(255,255,255,0.05); padding: 8px; border-radius: 6px;">
+                                    <div style="font-size: 0.75rem; color: #8b5cf6; font-weight: 600; margin-bottom: 4px;">✅ Agreed Points</div>
+                                    <div style="font-size: 0.625rem; color: #ccc; line-height: 1.3;">
+                                        • Healthcare has higher barriers but stronger defensibility<br>
+                                        • Fintech offers faster growth and sales cycles<br>
+                                        • Regulatory compliance is critical for healthcare<br>
+                                        • Brand positioning needs to balance trust and growth
+                                    </div>
+                                </div>
+                                <div style="background: rgba(255,255,255,0.05); padding: 8px; border-radius: 6px;">
+                                    <div style="font-size: 0.75rem; color: #8b5cf6; font-weight: 600; margin-bottom: 4px;">🎯 Next Steps</div>
+                                    <div style="font-size: 0.625rem; color: #ccc; line-height: 1.3;">
+                                        • Validate healthcare market with pilot customers<br>
+                                        • Build compliance infrastructure early<br>
+                                        • Develop dual brand positioning strategy<br>
+                                        • Plan fintech expansion timeline
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Add typing indicator first
+            const typingIndicator = document.createElement('div');
+            typingIndicator.className = 'typing-indicator';
+            typingIndicator.innerHTML = `
+                <div class="message-avatar avatar-gpt">GPT</div>
+                <span style="font-size: 0.875rem; color: #999;">Generating comprehensive summary...</span>
+                <div class="typing-dots">
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                </div>
+            `;
+
+            chatContainer.appendChild(typingIndicator);
+
+            // Replace typing indicator with summary after delay
+            setTimeout(() => {
+                chatContainer.removeChild(typingIndicator);
+                chatContainer.appendChild(summaryMessage);
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            }, 3000);
+        }
+
+        function addParticipant() {
+            // Create a simple modal or notification for adding participants
+            const participantsGrid = document.querySelector('.participants-grid');
+            const participantCount = document.querySelector('.collaboration-count');
+            
+            // Show a temporary notification
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: rgba(34, 197, 94, 0.9);
+                color: white;
+                padding: 12px 20px;
+                border-radius: 8px;
+                font-size: 0.875rem;
+                z-index: 1000;
+                animation: slideIn 0.3s ease;
+            `;
+            notification.textContent = '➕ Add participant feature coming soon!';
+            
+            document.body.appendChild(notification);
+            
+            // Remove notification after 3 seconds
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+        }
+
+        function toggleThreadDropdown() {
+            const dropdownMenu = document.getElementById('thread-dropdown-menu');
+            const toggleBtn = document.querySelector('.thread-dropdown-toggle');
+            
+            if (dropdownMenu.classList.contains('open')) {
+                dropdownMenu.classList.remove('open');
+                toggleBtn.classList.remove('open');
+            } else {
+                dropdownMenu.classList.add('open');
+                toggleBtn.classList.add('open');
+            }
+        }
+
+        function switchThread(threadId) {
+            // Remove active class from all dropdown items
+            document.querySelectorAll('.dropdown-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Add active class to clicked item
+            const clickedItem = document.querySelector(`[data-thread="${threadId}"]`);
+            if (clickedItem) {
+                clickedItem.classList.add('active');
+            }
+            
+            // Update current thread display
+            const currentThreadInfo = document.querySelector('.current-thread-info');
+            if (currentThreadInfo && clickedItem) {
+                const threadIcon = clickedItem.querySelector('.thread-icon').cloneNode(true);
+                const threadName = clickedItem.querySelector('.thread-name').textContent;
+                const threadStatus = clickedItem.querySelector('.thread-status').textContent;
+                
+                currentThreadInfo.innerHTML = `
+                    ${threadIcon.outerHTML}
+                    <div class="thread-details">
+                        <div class="thread-name">${threadName}</div>
+                        <div class="thread-status">${threadStatus}</div>
+                    </div>
+                `;
+            }
+            
+            // Close dropdown
+            const dropdownMenu = document.getElementById('thread-dropdown-menu');
+            const toggleBtn = document.querySelector('.thread-dropdown-toggle');
+            dropdownMenu.classList.remove('open');
+            toggleBtn.classList.remove('open');
+            
+            // Update thread context
+            const threadContext = document.querySelector('.panel-content > div:nth-child(2) > div');
+            const threadTitles = {
+                'market-strategy': '📊 Market Strategy Thread',
+                'product-roadmap': '🚀 Product Roadmap Thread',
+                'technical-architecture': '⚙️ Tech Architecture Thread',
+                'sales-strategy': '💰 Sales Strategy Thread'
+            };
+            const threadDescriptions = {
+                'market-strategy': 'Discussing AI startup market positioning and go-to-market strategy',
+                'product-roadmap': 'Planning product features, timeline, and development priorities',
+                'technical-architecture': 'Designing scalable infrastructure and technical implementation',
+                'sales-strategy': 'Developing sales approach, target markets, and revenue models'
+            };
+            
+            threadContext.querySelector('div:first-child').textContent = threadTitles[threadId];
+            threadContext.querySelector('div:last-child').textContent = threadDescriptions[threadId];
+
+            // Add visual feedback
+            clickedItem.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                clickedItem.style.transform = 'scale(1)';
+            }, 150);
+        }
+
+        function generateInsight() {
+            const button = event.target;
+            const originalText = button.textContent;
+            button.textContent = '🔄 Generating...';
+            button.style.background = 'linear-gradient(135deg, #f59e0b, #ef4444)';
+            
+            // Get current active thread
+            const activeThread = document.querySelector('.thread-nav-btn.active');
+            const threadType = activeThread ? activeThread.textContent.trim() : 'Market Strategy';
+            
+            setTimeout(() => {
+                // Create insight message based on thread type
+                const chatContainer = document.getElementById('collaboration-chat');
+                const insightMessage = document.createElement('div');
+                insightMessage.className = 'message';
+                
+                // Generate different insights based on thread type
+                let insightContent = '';
+                let threadIcon = '📊';
+                let threadColor = '#8b5cf6';
+                
+                if (threadType.includes('Market Strategy')) {
+                    threadIcon = '📊';
+                    threadColor = '#8b5cf6';
+                    insightContent = `
+                        <div style="background: rgba(139, 92, 246, 0.05); border-radius: 8px; padding: 12px; margin: 8px 0;">
+                            <div style="font-weight: 600; color: #8b5cf6; margin-bottom: 8px;">📋 Market Strategy Summary</div>
+                            
+                            <div style="margin-bottom: 12px;">
+                                <div style="font-weight: 600; color: #fff; margin-bottom: 6px;">🎯 Key Decisions:</div>
+                                <div style="font-size: 0.75rem; color: #ccc; line-height: 1.4;">
+                                    • Healthcare AI: High LTV, long sales cycles, regulatory barriers<br>
+                                    • Fintech AI: Faster sales, lower barriers, existing contacts<br>
+                                    • Recommendation: Start with fintech, expand to healthcare
+                                </div>
+                            </div>
+                            
+                            <div style="margin-bottom: 12px;">
+                                <div style="font-weight: 600; color: #fff; margin-bottom: 6px;">👥 Team Consensus:</div>
+                                <div style="font-size: 0.75rem; color: #ccc; line-height: 1.4;">
+                                    • Sarah: Healthcare focus (market size)<br>
+                                    • Mike: Regulatory concerns (compliance)<br>
+                                    • Emma: Fintech opportunity (sales contacts)<br>
+                                    • Alex: Brand positioning (trust vs excitement)
+                                </div>
+                            </div>
+                            
+                            <div style="background: rgba(139, 92, 246, 0.2); border-radius: 6px; padding: 8px;">
+                                <div style="font-size: 0.75rem; color: #8b5cf6; font-weight: 600;">🚀 Next Steps:</div>
+                                <div style="font-size: 0.75rem; color: #fff;">1. Validate fintech market with Emma's contacts 2. Create MVP for fraud detection 3. Plan healthcare expansion strategy</div>
+                            </div>
+                        </div>
+                    `;
+                } else if (threadType.includes('Product Roadmap')) {
+                    threadIcon = '🚀';
+                    threadColor = '#22c55e';
+                    insightContent = `
+                        <div style="background: rgba(34, 197, 94, 0.05); border-radius: 8px; padding: 12px; margin: 8px 0;">
+                            <div style="font-weight: 600; color: #22c55e; margin-bottom: 8px;">📋 Product Roadmap Summary</div>
+                            
+                            <div style="margin-bottom: 12px;">
+                                <div style="font-weight: 600; color: #fff; margin-bottom: 6px;">🎯 Key Features:</div>
+                                <div style="font-size: 0.75rem; color: #ccc; line-height: 1.4;">
+                                    • AI-powered diagnostic interface<br>
+                                    • Real-time collaboration tools<br>
+                                    • Multi-model AI integration<br>
+                                    • Enterprise security features
+                                </div>
+                            </div>
+                            
+                            <div style="margin-bottom: 12px;">
+                                <div style="font-weight: 600; color: #fff; margin-bottom: 6px;">📅 Timeline:</div>
+                                <div style="font-size: 0.75rem; color: #ccc; line-height: 1.4;">
+                                    • Q1: MVP with basic AI integration<br>
+                                    • Q2: Advanced collaboration features<br>
+                                    • Q3: Enterprise security & compliance<br>
+                                    • Q4: Multi-model AI support
+                                </div>
+                            </div>
+                            
+                            <div style="background: rgba(34, 197, 94, 0.2); border-radius: 6px; padding: 8px;">
+                                <div style="font-size: 0.75rem; color: #22c55e; font-weight: 600;">🚀 Next Steps:</div>
+                                <div style="font-size: 0.75rem; color: #fff;">1. Define MVP requirements 2. Set up development timeline 3. Plan user testing phases</div>
+                            </div>
+                        </div>
+                    `;
+                } else if (threadType.includes('Tech Architecture')) {
+                    threadIcon = '⚙️';
+                    threadColor = '#f59e0b';
+                    insightContent = `
+                        <div style="background: rgba(245, 158, 11, 0.05); border-radius: 8px; padding: 12px; margin: 8px 0;">
+                            <div style="font-weight: 600; color: #f59e0b; margin-bottom: 8px;">📋 Technical Architecture Summary</div>
+                            
+                            <div style="margin-bottom: 12px;">
+                                <div style="font-weight: 600; color: #fff; margin-bottom: 6px;">🏗️ Architecture Decisions:</div>
+                                <div style="font-size: 0.75rem; color: #ccc; line-height: 1.4;">
+                                    • Microservices architecture for scalability<br>
+                                    • Multi-cloud deployment strategy<br>
+                                    • Real-time WebSocket connections<br>
+                                    • GraphQL API for flexible data queries
+                                </div>
+                            </div>
+                            
+                            <div style="margin-bottom: 12px;">
+                                <div style="font-weight: 600; color: #fff; margin-bottom: 6px;">🔧 Tech Stack:</div>
+                                <div style="font-size: 0.75rem; color: #ccc; line-height: 1.4;">
+                                    • Backend: Node.js, Python, PostgreSQL<br>
+                                    • Frontend: React, TypeScript, Tailwind<br>
+                                    • AI: OpenAI, Anthropic, Google APIs<br>
+                                    • Infrastructure: AWS, Docker, Kubernetes
+                                </div>
+                            </div>
+                            
+                            <div style="background: rgba(245, 158, 11, 0.2); border-radius: 6px; padding: 8px;">
+                                <div style="font-size: 0.75rem; color: #f59e0b; font-weight: 600;">🚀 Next Steps:</div>
+                                <div style="font-size: 0.75rem; color: #fff;">1. Set up development environment 2. Create API documentation 3. Plan security audit</div>
+                            </div>
+                        </div>
+                    `;
+                } else if (threadType.includes('Sales Strategy')) {
+                    threadIcon = '💰';
+                    threadColor = '#ec4899';
+                    insightContent = `
+                        <div style="background: rgba(236, 72, 153, 0.05); border-radius: 8px; padding: 12px; margin: 8px 0;">
+                            <div style="font-weight: 600; color: #ec4899; margin-bottom: 8px;">📋 Sales Strategy Summary</div>
+                            
+                            <div style="margin-bottom: 12px;">
+                                <div style="font-weight: 600; color: #fff; margin-bottom: 6px;">🎯 Target Markets:</div>
+                                <div style="font-size: 0.75rem; color: #ccc; line-height: 1.4;">
+                                    • Healthcare: Hospitals, clinics, diagnostic centers<br>
+                                    • Fintech: Banks, payment processors, insurance<br>
+                                    • Enterprise: Fortune 500 companies<br>
+                                    • Startups: AI-first companies
+                                </div>
+                            </div>
+                            
+                            <div style="margin-bottom: 12px;">
+                                <div style="font-weight: 600; color: #fff; margin-bottom: 6px;">📈 Sales Approach:</div>
+                                <div style="font-size: 0.75rem; color: #ccc; line-height: 1.4;">
+                                    • Product-led growth strategy<br>
+                                    • Freemium model with premium features<br>
+                                    • Direct sales for enterprise customers<br>
+                                    • Partnership with system integrators
+                                </div>
+                            </div>
+                            
+                            <div style="background: rgba(236, 72, 153, 0.2); border-radius: 6px; padding: 8px;">
+                                <div style="font-size: 0.75rem; color: #ec4899; font-weight: 600;">🚀 Next Steps:</div>
+                                <div style="font-size: 0.75rem; color: #fff;">1. Build sales team 2. Create go-to-market materials 3. Establish partnerships</div>
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                insightMessage.innerHTML = `
+                    <div class="message-avatar avatar-gpt">GPT</div>
+                    <div class="message-content">
+                        <div class="message-text">
+                            <strong>GPT-4</strong> (Thread Analyst)<br>
+                            <div style="background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 6px; padding: 8px; margin: 8px 0;">
+                                <div style="font-size: 0.75rem; color: #8b5cf6; font-weight: 600; margin-bottom: 4px;">💡 ${threadIcon} Thread Insight Generated</div>
+                                <div style="font-size: 0.75rem; color: #ccc;">Analyzing ${threadType.toLowerCase()} conversation patterns and key insights...</div>
+                            </div>
+                            ${insightContent}
+                        </div>
+                    </div>
+                `;
+                
+                chatContainer.appendChild(insightMessage);
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+                
+                // Reset button
+                button.textContent = originalText;
+                button.style.background = 'linear-gradient(135deg, #8b5cf6, #3b82f6)';
+            }, 2000);
+        }
+
+        // Add CSS animations for notifications
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOut {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Navigation function for Chat button
+        function startChat() {
+            // Navigate to the FlowChat application
+            window.location.href = '/flowchat';
+        }
+    </script>
+</body>
+</html>

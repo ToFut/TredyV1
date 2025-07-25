@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>API Test</title>
+</head>
+<body>
+    <h1>API Test</h1>
+    <button onclick="testAPI()">Test API Call</button>
+    <div id="result"></div>
+
+    <script>
+        async function testAPI() {
+            try {
+                console.log('🔍 Testing API call...');
+                
+                const response = await fetch('http://localhost:5001/api/chat/send', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        content: 'test message from browser',
+                        conversationId: '22222222-2222-2222-2222-222222222222',
+                        model: 'gpt-4o'
+                    })
+                });
+
+                console.log('✅ Response status:', response.status);
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('✅ API Response:', data);
+                    document.getElementById('result').innerHTML = `
+                        <h3>Success!</h3>
+                        <p><strong>AI Response:</strong> ${data.aiMessage.content}</p>
+                        <p><strong>Model:</strong> ${data.usage.model}</p>
+                        <p><strong>Tokens:</strong> ${data.usage.tokensUsed}</p>
+                    `;
+                } else {
+                    console.error('❌ API Error:', response.status, response.statusText);
+                    const errorText = await response.text();
+                    console.error('❌ Error details:', errorText);
+                    document.getElementById('result').innerHTML = `
+                        <h3>Error!</h3>
+                        <p><strong>Status:</strong> ${response.status}</p>
+                        <p><strong>Error:</strong> ${errorText}</p>
+                    `;
+                }
+            } catch (error) {
+                console.error('❌ Network Error:', error);
+                document.getElementById('result').innerHTML = `
+                    <h3>Network Error!</h3>
+                    <p><strong>Error:</strong> ${error.message}</p>
+                `;
+            }
+        }
+    </script>
+</body>
+</html> 

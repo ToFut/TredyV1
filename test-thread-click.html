@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thread Click Test</title>
+    <style>
+        .thread-card {
+            background: linear-gradient(to right, #eff6ff, #dbeafe);
+            border: 1px solid #3b82f6;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin: 1rem;
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+        }
+        .thread-card:hover {
+            transform: scale(1.02);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+        }
+        .thread-content {
+            pointer-events: none;
+        }
+        .thread-content * {
+            pointer-events: none;
+        }
+        .button {
+            pointer-events: auto;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            margin: 0.5rem;
+        }
+        .button:hover {
+            background: #2563eb;
+        }
+    </style>
+</head>
+<body>
+    <h1>Thread Click Test</h1>
+    <p>Click anywhere on the thread card (except buttons) to test navigation:</p>
+    
+    <div class="thread-card" onclick="handleThreadClick()">
+        <div class="thread-content">
+            <h3>Test Thread #1234</h3>
+            <p>This is a test thread with some content to demonstrate the click functionality.</p>
+            <div>
+                <span style="background: #dbeafe; color: #1e40af; padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-size: 0.75rem;">Open</span>
+                <span style="background: #f3f4f6; color: #374151; padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-size: 0.75rem; margin-left: 0.5rem;">3 msg</span>
+            </div>
+        </div>
+        <button class="button" onclick="handleButtonClick(event)">Open Button</button>
+        <button class="button" onclick="handleButtonClick(event)">Details</button>
+    </div>
+    
+    <div id="result" style="margin: 1rem; padding: 1rem; background: #f3f4f6; border-radius: 0.5rem;"></div>
+    
+    <script>
+        function handleThreadClick() {
+            console.log('🔍 Thread card clicked!');
+            document.getElementById('result').innerHTML = '<strong>✅ Thread card clicked successfully!</strong><br>This should navigate to the thread.';
+        }
+        
+        function handleButtonClick(event) {
+            event.stopPropagation();
+            console.log('🔍 Button clicked:', event.target.textContent);
+            document.getElementById('result').innerHTML = '<strong>🔘 Button clicked:</strong> ' + event.target.textContent + '<br>This should NOT trigger thread navigation.';
+        }
+    </script>
+</body>
+</html> 

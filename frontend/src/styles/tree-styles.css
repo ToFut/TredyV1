@@ -1,0 +1,374 @@
+/* Next-Gen Simple Thread Sidebar */
+.thread-sidebar {
+  background: #fafafa;
+  border-right: 1px solid #e5e7eb;
+  width: 280px;
+  display: flex;
+  flex-direction: column;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.thread-header {
+  padding: 16px;
+  border-bottom: 1px solid #e5e7eb;
+  background: white;
+}
+
+.thread-header-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 4px;
+}
+
+.thread-header-subtitle {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.thread-search {
+  padding: 12px 16px;
+  border-bottom: 1px solid #e5e7eb;
+  background: white;
+}
+
+.thread-search input {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 13px;
+  background: white;
+  transition: all 0.2s ease;
+}
+
+.thread-search input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.thread-search input::placeholder {
+  color: #9ca3af;
+}
+
+.thread-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 0;
+}
+
+.thread-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.thread-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.thread-list::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 3px;
+}
+
+.thread-list::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+/* Simple Thread Item */
+.thread-item {
+  position: relative;
+  margin: 0 8px 2px 8px;
+  border-radius: 6px;
+  transition: all 0.15s ease;
+  cursor: pointer;
+}
+
+.thread-item:hover {
+  background: #f3f4f6;
+}
+
+.thread-item.active {
+  background: #eff6ff;
+  border: 1px solid #3b82f6;
+}
+
+.thread-item-content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  min-height: 40px;
+}
+
+.thread-icon {
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 600;
+  color: white;
+  flex-shrink: 0;
+}
+
+.thread-icon.main { background: #3b82f6; }
+.thread-icon.sub { background: #8b5cf6; }
+.thread-icon.sibling { background: #10b981; }
+.thread-icon.suggested { background: #f59e0b; }
+
+.thread-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.thread-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: #111827;
+  line-height: 1.3;
+  margin-bottom: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.thread-preview {
+  font-size: 11px;
+  color: #6b7280;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.thread-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.thread-count {
+  font-size: 10px;
+  color: #6b7280;
+  background: #f3f4f6;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.thread-status {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #10b981;
+}
+
+.thread-expand {
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #9ca3af;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+
+.thread-expand:hover {
+  color: #6b7280;
+  background: #f3f4f6;
+  border-radius: 3px;
+}
+
+.thread-expand svg {
+  width: 12px;
+  height: 12px;
+  transition: transform 0.15s ease;
+}
+
+.thread-expand.expanded svg {
+  transform: rotate(90deg);
+}
+
+/* Simple Tree Lines */
+.thread-tree-line {
+  position: absolute;
+  left: 20px;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: #e5e7eb;
+}
+
+.thread-tree-line-horizontal {
+  position: absolute;
+  left: 20px;
+  top: 20px;
+  width: 12px;
+  height: 1px;
+  background: #e5e7eb;
+}
+
+/* Indentation Levels */
+.thread-level-0 { margin-left: 0; }
+.thread-level-1 { margin-left: 24px; }
+.thread-level-2 { margin-left: 48px; }
+.thread-level-3 { margin-left: 72px; }
+.thread-level-4 { margin-left: 96px; }
+
+/* Thread Children */
+.thread-children {
+  transition: all 0.2s ease;
+  overflow: hidden;
+}
+
+.thread-children.collapsed {
+  max-height: 0;
+  opacity: 0;
+}
+
+.thread-children.expanded {
+  max-height: 1000px;
+  opacity: 1;
+}
+
+/* Folder Groups */
+.thread-folder {
+  margin: 8px 8px 2px 8px;
+  border-radius: 6px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+}
+
+.thread-folder-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.thread-folder-header:hover {
+  background: #f3f4f6;
+}
+
+.thread-folder-icon {
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  background: #6b7280;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  color: white;
+  flex-shrink: 0;
+}
+
+.thread-folder-content {
+  padding-left: 12px;
+  border-left: 1px solid #e5e7eb;
+  margin-left: 20px;
+}
+
+/* Empty State */
+.thread-empty {
+  text-align: center;
+  padding: 40px 20px;
+  color: #6b7280;
+}
+
+.thread-empty-icon {
+  width: 48px;
+  height: 48px;
+  margin: 0 auto 16px;
+  background: #f3f4f6;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #9ca3af;
+  font-size: 20px;
+}
+
+.thread-empty-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 4px;
+}
+
+.thread-empty-subtitle {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+/* Quick Actions */
+.thread-actions {
+  padding: 12px 16px;
+  border-top: 1px solid #e5e7eb;
+  background: white;
+}
+
+.thread-action-btn {
+  width: 100%;
+  padding: 8px 12px;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.thread-action-btn:hover {
+  background: #2563eb;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .thread-sidebar {
+    width: 240px;
+  }
+  
+  .thread-level-1 { margin-left: 20px; }
+  .thread-level-2 { margin-left: 40px; }
+  .thread-level-3 { margin-left: 60px; }
+  .thread-level-4 { margin-left: 80px; }
+}
+
+/* Animation for new threads */
+@keyframes threadSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.thread-item.new {
+  animation: threadSlideIn 0.3s ease;
+}
+
+/* Focus states for accessibility */
+.thread-item:focus-within {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+.thread-search input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+} 
