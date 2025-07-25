@@ -7,19 +7,11 @@ import {
   ChevronRight, 
   Menu, 
   X, 
-  Check, 
-  Mail, 
   Download,
   Eye,
-  EyeOff,
   Zap,
   GitBranch,
-  Clock,
-  Play,
-  BarChart3,
   FileText,
-  Code,
-  MoreHorizontal,
   ArrowLeft,
   Lightbulb,
   Users,
@@ -49,7 +41,6 @@ const FlowChat = () => {
     const [draftText, setDraftText] = useState('');
     const [threadDraftText, setThreadDraftText] = useState({});
     const [sidebarOpen, setSidebarOpen] = useState(false);
-    const [viewMode, setViewMode] = useState('chat');
     const [currentView, setCurrentView] = useState('main');
     const [navigationHistory, setNavigationHistory] = useState(['main']);
     const [suggestedQuestions, setSuggestedQuestions] = useState([]);
@@ -63,27 +54,19 @@ const FlowChat = () => {
     const [threadDropdowns, setThreadDropdowns] = useState({});
     const [suggestedThreads, setSuggestedThreads] = useState({});
     const [threadHierarchy, setThreadHierarchy] = useState({});
-    const [hoveredThread, setHoveredThread] = useState(null);
     
     // UX Improvement States
     const [showOnboarding, setShowOnboarding] = useState(true);
     const [onboardingStep, setOnboardingStep] = useState(0);
     const [collapsedThreads, setCollapsedThreads] = useState(new Set());
     const [compactMode, setCompactMode] = useState(false);
-    const [showAdvancedFeatures, setShowAdvancedFeatures] = useState(false);
     
     // Enhanced UX States
-    const [messageAnimations, setMessageAnimations] = useState(new Set());
-    const [hoveredMessage, setHoveredMessage] = useState(null);
     const [showQuickActions, setShowQuickActions] = useState(false);
-    const [typingIndicator, setTypingIndicator] = useState(false);
-    const [messageReactions, setMessageReactions] = useState({});
-    const [showThreadPreview, setShowThreadPreview] = useState(true);
     const [modelDropdownOpen, setModelDropdownOpen] = useState(false);
     const [threadModelDropdownOpen, setThreadModelDropdownOpen] = useState(false);
     
     // Collaboration States
-    const [collaborators, setCollaborators] = useState([]);
     const [activeUsers, setActiveUsers] = useState([]);
     const [inviteModal, setInviteModal] = useState(false);
     const [currentInviteThread, setCurrentInviteThread] = useState(null);
@@ -91,13 +74,9 @@ const FlowChat = () => {
     
     // --- Add state for export outcome modal ---
     const [exportOutcomeModal, setExportOutcomeModal] = useState({ open: false, threadId: null });
-    const [outcomeText, setOutcomeText] = useState('');
-    const [outcomeModel, setOutcomeModel] = useState(currentModel);
-    const [outcomeTarget, setOutcomeTarget] = useState('main');
     
     // Memory and Understanding States
     const [threadMemories, setThreadMemories] = useState({});
-    const [userUnderstanding, setUserUnderstanding] = useState({});
     const [memoryModal, setMemoryModal] = useState({ open: false, threadId: null });
     const [groupMemories, setGroupMemories] = useState({});
     const [learningPath, setLearningPath] = useState([]);
@@ -437,7 +416,7 @@ const FlowChat = () => {
       const isSubThread = thread && thread.parentThreadId;
       const hasSelectedText = thread && thread.selectedText;
       const isImportantNote = thread && thread.isImportantNote;
-      const modelInfo = availableModels.find(m => m.id === model);
+      
       
       // Model-specific response patterns
       const modelResponses = {
@@ -1656,7 +1635,7 @@ const FlowChat = () => {
   
     // Define computed values
     const activeThreads = threads.filter(t => t.status === 'active');
-    const currentModelInfo = availableModels.find(m => m.id === currentModel);
+    
     const currentUser = activeUsers.find(u => u.isCurrentUser);
     const canInvite = currentUser && permissions[currentUser.id]?.canInvite;
   
